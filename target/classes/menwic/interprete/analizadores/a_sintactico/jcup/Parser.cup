@@ -1,0 +1,31 @@
+package menwic.interprete.analizadores.a_sintactico;
+
+class Parser;
+
+parser code {:
+
+    public Parser(Lexer lex){
+        super(lexer);
+    }
+:}
+
+terminal Token, IGUAL, MENOS, POR, DIV, DIF, MAYOR, MENOR, GUION_B,
+PAR_A, PAR_C, COMILLA, COMA, PUNTO_COMA, LETRA, DIGITO
+
+non terminal /* ExprReg1, ExprReg2, ... */
+
+op1 ::=
+        op1:n1 MAS op2:n2 {: RESULT = n1 + n2; :}
+        | op1:var1 MENOS op2:var2 {: RESULT = var1 - var2; :}
+        | veces: num {: RESULT = num; :}
+
+op2 ::=
+        op2:n1 POR op3: {: RESULT n1 * n2; :}
+        | op2:n1 DIV op3:n2 {: if(n2 == 0){
+            throm new IllegalArgumentException("Dividiendo por cero");
+        } RESULT = n1 / n2; :}
+        | op3:n1 {: RESULT = n1; :}
+
+op3 ::=
+       ENTERO:n1 {: RESULT = ENTERO.valuOf(n1.getValue()); :}
+        ;
