@@ -14,6 +14,11 @@ public class Variable {
         this.nombre = nombre;
         this.valor = valor;
     }
+    public Variable(String tipo,String nombre, String valor) {
+        this.nombre = nombre;
+        this.tipo=tipo;
+        this.valor = valor;
+    }
 
     //Getters y Setters
     public String getTipo() {

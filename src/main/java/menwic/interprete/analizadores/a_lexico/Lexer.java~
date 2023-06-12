@@ -678,7 +678,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             }
           case 28: break;
           case 2: 
-            { return new Symbol(sym.NomVariable,yyline,yycolumn,yytext());
+            { System.out.println(yytext()); return new Symbol(sym.NomVariable,yyline,yycolumn,yytext());
             }
           case 29: break;
           case 3: 
@@ -770,7 +770,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             }
           case 51: break;
           case 25: 
-            { return new Symbol(sym.ENTERO,yyline,yycolumn,yytext());
+            { System.out.println(yytext()); return new Symbol(sym.ENTERO,yyline,yycolumn,yytext());
             }
           case 52: break;
           case 26: 

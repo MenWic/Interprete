@@ -3,6 +3,7 @@ package menwic.interprete.GUI;
 import menwic.interprete.analizadores.a_lexico.Lexer;
 
 import java.io.StringReader;
+import static java.lang.System.exit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import menwic.interprete.analizadores.a_lexico.Token;
@@ -84,7 +85,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jLabel2.setText("Terminal:");
 
         jButtonSalir.setText("Exit");
-        jButtonSalir.setToolTipText("Limpiar");
+        jButtonSalir.setToolTipText("Salir");
         jButtonSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSalirActionPerformed(evt);
@@ -191,7 +192,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonBorrarActionPerformed
 
     private void jButtonSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalirActionPerformed
-        // TODO add your handling code here:
+        exit(-1);
     }//GEN-LAST:event_jButtonSalirActionPerformed
 
     /**

@@ -43,15 +43,15 @@ PUNTO_COMA = ";"
 
 /*EXPRESIONES REGULARES*/
 //CARAC_ENTRADA = [^\r\n]
-TERM_LINEA = \r|\n|(\r\n)
-ESPACIO_BLANCO= {TERM_LINEA} | ( \t\f)
+
 LETRA = [a-z]|[A-Z]
 
 NumEntero = \p{Digit}+
 NumDecimal = {NumEntero}\.{NumEntero}
 NomVariable = ({LETRA}|{GUION_B})({LETRA}|{GUION_B}|{NumEntero})*
 Cadena ={COMILLA} [^\n]* {COMILLA}
-
+LineTerminator = \r|\n|\r\n
+WhiteSpace     = {LineTerminator} | [ \t\f]
 %init{
     yyline=1;
     yycolumn=1;
@@ -79,7 +79,7 @@ Cadena ={COMILLA} [^\n]* {COMILLA}
 
 {NumEntero}      {return new Symbol(sym.NumEntero,yyline,yycolumn,yytext());}
 {NumDecimal}     {return new Symbol(sym.NumDecimal,yyline,yycolumn,yytext());}
-{NomVariable}    {return new Symbol(sym.NomVariable,yyline,yycolumn,yytext());}
+{NomVariable}    {System.out.println(yytext()); return new Symbol(sym.NomVariable,yyline,yycolumn,yytext());}
 {Cadena}         {return new Symbol(sym.Cadena,yyline,yycolumn,yytext());}
 
 {MAS}           {return new Symbol(sym.MAS,yyline,yycolumn,yytext());}
@@ -90,6 +90,6 @@ Cadena ={COMILLA} [^\n]* {COMILLA}
 {MAYOR}         {return new Symbol(sym.MAYOR,yyline,yycolumn,yytext());}
 {MENOR}         {return new Symbol(sym.MENOR,yyline,yycolumn,yytext());}
 
-{ESPACIO_BLANCO} {/*Ignorando*/}
+{WhiteSpace} {/*Ignorando*/}
 [^]              {return new Symbol(sym.ERROR,yyline,yycolumn,yytext());}
 

@@ -22,7 +22,7 @@ parser code {:
      /*DECLARAR VARIABLE*/
     //Metodo para guardar variable en Java
     public void guardarVariable(String dataType, String nameVar){
-        arrVariables.add(new Variable(nameVar, ""));
+        arrVariables.add(new Variable(dataType,nameVar, ""));
     }
 
     /*ASIGNAR VARIABLE*/
@@ -31,10 +31,19 @@ parser code {:
         Variable varTemp = buscarVariable(nameVar); 
 
         if(varTemp != null){ //si la variable retornada no es nula, se encontro
-            varTemp.setValor(chain);
-            JOptionPane.showMessageDialog(null,varTemp.getValor() + " asignado a variable " + varTemp.getNombre());
+            
+            if(varTemp.getTipo().equals("int")&& esNumero(chain)){ //es entero
+                    varTemp.setValor(chain);
+            } else if(varTemp.getTipo().equals("float") && esFloat(chain)){ //esFloat
+                    varTemp.setValor(chain);
+            } else if(varTemp.getTipo().equals("String")) { //Es cadena
+                varTemp.setValor(chain);
+                textArea.append(varTemp.getValor() + " asignado a variable " + varTemp.getNombre()+"\n");
+            } else {
+                textArea.append(varTemp.getNombre()+" es "+varTemp.getTipo()+", no puede recibir "+chain+"\n");
+            } 
         } else{
-            JOptionPane.showMessageDialog(null,"No se encontro la variable " + nameVar);
+            textArea.append("No se encontro la variable " + nameVar+"\n");
         }
     }
 
@@ -126,6 +135,16 @@ parser code {:
         }
     }
 
+    //Metodo para verificar si un valor es de tipo entero
+    private boolean esFloat(String val){
+        try {
+            Float.parseFloat(val);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     /*ESCRITURA*/
     //metodo principal que escribe lo que esta entre parentesis (verifica si es texto o si es variable)
      public void escribir(String data){
@@ -151,6 +170,20 @@ parser code {:
         asignarVariable(nameVar, userInput);
     }
 
+   public void report_fatal_error(String message,Object info){
+        System.out.println("Public void report_fatal_error");
+    }
+
+    public void syntax_error(Symbol cur_token){
+        System.out.println("Syntax error: "+cur_token.value.toString());
+    }
+
+    public void unrecoveres_syntax_error(Symbol cur_token){
+        if(cur_token.sym==sym.EOF){
+            System.out.println("Public void unrecoveredsyntax_Error");
+        }
+    }
+
 :}
 
 
@@ -160,38 +193,41 @@ TERM_LINEA, ESPACIO_BLANCO, LETRA, ENTERO, FLOTANTE, TEXTO, NumEntero, NumDecima
 ESCRIBIR, LEER, SI, SINO, PARA, ERROR;
 
 //no terminales de cup
-non terminal inicio, ejecucion, declaracion, tipodato, asignacion, num, operacion, operando, escritura, escribir, lectura, condicional,
-si, condicion, comparador, instr, sino, ciclo, para, param;
+non terminal inicio, ejecucion, declaracion, asignacion, num, operacion, operando, escritura, escribir, lectura, condicional,
+si, condicion, comparador, instr, sino, ciclo, para, param, tipodato;
 
-inicio ::= ejecucion inicio {::}
+inicio ::= inicio ejecucion {::}
         | ejecucion {::}
         ;
 
 ejecucion ::= declaracion {::}
             | asignacion PUNTO_COMA {::}
             | escritura PUNTO_COMA {::}
-            | lectura PUNTO_COMA {::}
+            | lectura  {::}
             | ciclo {::}
             | condicional {::}
             ;
 
-/*
-declaracion ::= ENTERO NomVariable:nameVar PUNTO_COMA {: RESULT = "int "+nameVar; :}
-                | FLOTANTE NomVariable:nameVar PUNTO_COMA {: RESULT = "float "+nameVar; :}
-                | TEXTO NomVariable:nameVar PUNTO_COMA {: RESULT = "String "+nameVar; :}
-*/
 
-declaracion ::= tipodato:dataType NomVariable:nameVar PUNTO_COMA {: guardarVariable(dataType.toString(), nameVar.toString()); :}
+declaracion ::= ENTERO:entero NomVariable:nameVar PUNTO_COMA {: guardarVariable("int",nameVar.toString()); :}
+                | FLOTANTE:flotante NomVariable:nameVar PUNTO_COMA {: guardarVariable("float",nameVar.toString()); :}
+                | TEXTO:string NomVariable:nameVar PUNTO_COMA {: guardarVariable("String",nameVar.toString()); :}
+                ;
+
+
+/*
+declaracion ::= tipodato:dataType NomVariable:nameVar PUNTO_COMA {:System.out.println("paso declaracion");  guardarVariable(dataType.toString(), nameVar.toString()); :}
             ;
 
-    tipodato ::= ENTERO {: RESULT = "int"; :}
+    tipodato ::= ENTERO {: System.out.println("paso Entero"); RESULT = "int"; :}
                 | FLOTANTE {: RESULT = "float"; :}
                 | TEXTO {: RESULT = "String"; :}
                 ;
+   */        
 
-/*0*/ asignacion ::= | NomVariable:nameVar IGUAL Cadena:chain {: asignarVariable(nameVar.toString(), chain.toString()); :}
-                | NomVariable:nameVar IGUAL num:value {: asignarVariable(nameVar.toString(), value.toString()); :}
-                ;
+asignacion ::= NomVariable:nameVar IGUAL Cadena:chain {: asignarVariable(nameVar.toString(), chain.toString()); :}
+            | NomVariable:nameVar IGUAL num:value {: asignarVariable(nameVar.toString(), value.toString()); :}
+            ;
 
     num ::= NumEntero:numInt {: RESULT = numInt.toString(); :}
         | NumDecimal:numDecimal {: RESULT = numDecimal.toString(); :}
@@ -217,7 +253,7 @@ declaracion ::= tipodato:dataType NomVariable:nameVar PUNTO_COMA {: guardarVaria
             | Cadena:text {: RESULT = text; :}
             ;
 
-/*0*/ lectura ::= LEER PAR_A COMILLA NomVariable:nameVar COMILLA PAR_C {: lectura(nameVar.toString()); :}
+/*0*/ lectura ::= LEER PAR_A NomVariable:nameVar  PAR_C PUNTO_COMA {: lectura(nameVar.toString()); :}
             ;
 
 condicional ::= si {::}
