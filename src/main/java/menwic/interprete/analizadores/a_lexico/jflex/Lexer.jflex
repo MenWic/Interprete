@@ -1,21 +1,21 @@
 package menwic.interprete.analizadores.a_lexico;
 
 /*Codigo de importacion*/
-import menwic.interprete.analizadores.a_lexico.Token;
-
+//import java_cup.runtime.*;
 %%
 %class Lexer
-%line
+%line   
 %column
-%type Token
 %public
 %unicode
+%type Token /* %cup //Tronar %type token */
 
 /*PALABRAS RESERVADAS*/
 ENTERO = [E][n][t][e][r][o]
 FLOTANTE = [F][l][o][t][a][n][t][e]
 TEXTO = [T][e][x][t][o]
 
+/*INSTRUCCIONES*/
 ESCRIBIR = [E][s][c][r][i][b][i][r]
 LEER = [L][e][e][r]
 SI = [S][i]
@@ -39,20 +39,17 @@ COMILLA = "\""
 COMA = ","
 PUNTO_COMA = ";"
 
+/*EXPRESIONES REGULARES*/
+//CARAC_ENTRADA = [^\r\n]
+TERM_LINEA = \r|\n|(\r\n)
+ESPACIO_BLANCO= {TERM_LINEA} | ( \t\f)
 LETRA = \p{Letter} //[a-z]|[A-Z]
 DIGITO = \p{Digit} //[0-9]
 
-
-/*EXPRESIONES REGULARES*/
 NumEntero = {DIGITO}+
-NumDecimal = {NumEntero}\.{NumEntero} //Cualquer caracter
-//Cadena = {COMILLA}\W{COMILLA}
-Cadena ={COMILLA}({LETRA}|{NumEntero}|{NumDecimal}|{ESPACIO_BLANCO}|\W )* {COMILLA}
+NumDecimal = {NumEntero}\.{NumEntero}
 NomVariable = ({LETRA}|{GUION_B})({LETRA}|{GUION_B}|{NumEntero})*
-
-TERM_LINEA = \r|\n|\r\n
-CARAC_ENTRADA = [^\r\n]
-ESPACIO_BLANCO= {TERM_LINEA} | [ \t\f]
+Cadena ={COMILLA}({LETRA}|{NumEntero}|{NumDecimal}|{ESPACIO_BLANCO}|\W )*{COMILLA}
 
 %init{
     yyline=1;
@@ -63,6 +60,7 @@ ESPACIO_BLANCO= {TERM_LINEA} | [ \t\f]
 
 /*RETURN DE TOKENS*/
 {ENTERO}        {return (new Token(yytext(),yyline,yycolumn));}
+                /*return new Symbol(ParserSym.ENTERO,yyline,yycolumn,yytext());*/
 {FLOTANTE}      {return (new Token(yytext(),yyline,yycolumn));}
 {TEXTO}         {return (new Token(yytext(),yyline,yycolumn));}
 
@@ -83,8 +81,8 @@ ESPACIO_BLANCO= {TERM_LINEA} | [ \t\f]
 {DIGITO}         {return (new Token(yytext(),yyline,yycolumn));}
 {NumEntero}      {return (new Token(yytext(),yyline,yycolumn));}
 {NumDecimal}     {return (new Token(yytext(),yyline,yycolumn));}
-{Cadena}         {return (new Token(yytext(),yyline,yycolumn));}
 {NomVariable}    {return (new Token(yytext(),yyline,yycolumn));}
+{Cadena}         {return (new Token(yytext(),yyline,yycolumn));}
 
 {ESPACIO_BLANCO} {/*Ignorando*/}
 [^]              {System.out.println("Error: "+yytext());}

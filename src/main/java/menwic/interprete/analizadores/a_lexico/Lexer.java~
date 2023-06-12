@@ -3,6 +3,8 @@
 package menwic.interprete.analizadores.a_lexico;
 
 /*Codigo de importacion*/
+import menwic.interprete.analizadores.a_lexico.Token; //V
+
 //cup //Tronar %type token
 
 /**

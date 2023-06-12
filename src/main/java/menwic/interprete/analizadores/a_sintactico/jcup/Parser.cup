@@ -4,28 +4,239 @@ class Parser;
 
 parser code {:
 
+    //Heap que almacena variables
+    private ArrayList<Variable> arrVariables = new ArrayList<>();
+
     public Parser(Lexer lex){
         super(lexer);
     }
+     
+     /*DECLARAR VARIABLE*/
+    //Metodo para guardar variable en Java
+    public void guardarVariable(String dataType, String nameVar){
+        arrVariables.add(new Variable(dataType, nameVar));
+    }
+
+    /*ASIGNAR VARIABLE*/
+    //Metodo principal para settear atributos de una variable pre-creada
+    public void asignarVariable(String nameVar, String chain){
+        Variable varTemp = buscarVariable(nameVar); 
+
+        if(varTemp != null){ //si la variable retornada no es nula, se encontro
+            varTemp.setValor(chain);
+            JOptionPane.showMessage(varTemp.getValor() + " asignado a variable " + varTemp.getNombre());
+        } else{
+            JOptionPane.showMessage("No se encontro la variable " + nameVar);
+        }
+    }
+
+    //Metodo Secundario de Asignar que busca una variable por nombre
+    public Variable buscarVariable(String nameVar){
+        //recorrer variables almacenadas
+        foreach(Variable variable: arrVariables){
+            if(variable.getNombre().equals(nameVar))
+            return variable;
+        }
+        return null;
+    }
+
+    //Metodo Ternario que realiza operacion matematica para obtener resultado que sera vlor de una variable
+    public int operacion(String val1, String operando, String val2){
+        //Valores recibidos ya parseados
+        int num1 = 0;
+        int num2 = 0;
+        int resultado = 0;
+
+        switch (operando) {
+        case "+":
+            //Val1
+            num1 = convertirAEntero(val1);
+            //Val2
+            num2 = convertirAEntero(val2);
+            return resultado = num1 + num2;
+            break;
+
+        case "-":
+            //Val1
+            num1 = convertirAEntero(val1);
+            //Val2
+            num2 = convertirAEntero(val2);
+            return resultado = num1 - num2;
+            break;
+
+        case "*":
+            //Val1
+            num1 = convertirAEntero(val1);
+            //Val2
+            num2 = convertirAEntero(val2);
+            return resultado = num1 * num2;
+            break;
+
+        case "/":
+            //Val2 (no puede dividirse entre 0)
+            num2 = convertirAEntero(val2);
+
+            if(num2 != 0){
+                //Val1
+                num1 = convertirAEntero(val1);
+                return resultado = num1 / num2;
+            } else{
+                JOptionPane.showMessageDialog("Error: "num1+" no puede dividirse entre "+num2+"!");
+                return resultado;
+            }
+            break;
+    
+        default:
+            JOptionPane.showMessageDialog("Error: El simbolo de operacion no fue ningun caso aceptado, revise");
+            return resultado;
+            break;
+        }
+    }
+
+//Metodo para pasar a entero
+    public int convertirAEntero(String val) {
+        int numTemp = 0;
+
+        //1 solo Val
+        if (esNumero(val)){ //si es numero entero
+                numTemp = Integer.parseOf(val);
+                return numTemp;
+        } else(){ //como no fue num int, sera variable
+            String valorTemp = buscarVariable(val).getValor();
+            
+            if(esNumero(valorTemp)){ //si la variable es num int
+                numTemp = Integer.parseOf()
+                return numTemp;
+            }
+        }
+    }
+
+    //Metodo para verificar si un valor es de tipo entero
+    private boolean esNumero(String val){
+        try {
+            Double.parseDouble(val);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /*ESCRITURA*/
+    //metodo principal que escribe lo que esta entre parentesis (verifica si es texto o si es variable)
+    public void escribir(String data){
+        //Verificar si trae comillas, si si, se imprime, si no, se busca var y valor e imprimir valor
+        if(data.contains("\"")){
+            System.out.println(data.replaceAll("\"", "")); //RECORDAR PASAR AL TEXT AREA, NO A TERMINAL
+        } else{ //como no es texto, buscamos variable.valor e imprimimos
+            Variable varTemp = variables.buscarVariable(data);
+
+            if(varTemp != null){ //si la variable retornada no es nula, se encontro
+                System.out.println(varTemp.getValor());
+            } else{
+                JOptionPane.showMessage("No se encontro la variable " + data);
+            }
+        }
+    }
+
+    /*LECTURA*/
+    public void lectura(String nameVar){
+        String userInput = JOptionPane.showInputDialog(null, "Ingrese su dato: ");
+        Variable varTemp = buscarVariable(nameVar);
+        asignarVariable(varTemp.getNombre(), varTemp.setValor(userInput));
+    }
+
 :}
 
-terminal Token, IGUAL, MENOS, POR, DIV, DIF, MAYOR, MENOR, GUION_B,
-PAR_A, PAR_C, COMILLA, COMA, PUNTO_COMA, LETRA, DIGITO
 
-non terminal /* ExprReg1, ExprReg2, ... */
+//terminals de flex
+terminal Token, IGUAL, MENOS, POR, DIV, DIF, MAYOR, MENOR, GUION_B, PAR_A, PAR_C, COMILLA, COMA, PUNTO_COMA, LETRA, DIGITO, 
+TERM_LINEA, ESPACIO_BLANCO, LETRA, DIGITO, NumEntero, NumDecimal, NomVariable, Cadena,
+ESCRIBIR, LEER, SI, SINO, PARA;
 
-op1 ::=
-        op1:n1 MAS op2:n2 {: RESULT = n1 + n2; :}
-        | op1:var1 MENOS op2:var2 {: RESULT = var1 - var2; :}
-        | veces: num {: RESULT = num; :}
+//no terminales de cup
+non terminal ejecucion, declaracion, tipo_dato, asignacion, num, operacion, operando, escritura, lectura, condicional,
+si, condicion, comparador, instr, sino, ciclo, para, param
 
-op2 ::=
-        op2:n1 POR op3: {: RESULT n1 * n2; :}
-        | op2:n1 DIV op3:n2 {: if(n2 == 0){
-            throm new IllegalArgumentException("Dividiendo por cero");
-        } RESULT = n1 / n2; :}
-        | op3:n1 {: RESULT = n1; :}
 
-op3 ::=
-       ENTERO:n1 {: RESULT = ENTERO.valuOf(n1.getValue()); :}
+/*0*/ ejecucion ::= declaracion PUNTO_COMA
+            | asignacion PUNTO_COMA
+            | escritura PUNTO_COMA
+            | lectura PUNTO_COMA
+            | ciclo
+            | condicional
+            ;
+
+/*0*/ declaracion ::= tipoDato:dataType NombreVar:nameVar {: guardarVariable(dataType.toString(), nameVar.toString()); :}
+                    ;
+
+
+    tipo_dato ::= ENTERO {: RESULT = "int"; :}
+                | FLOTANTE {: RESULT = "float"; :}
+                | TEXTO {: RESULT = "String"; :}
+                ;
+
+/*0*/ asignacion ::= | NomVariable:nameVar IGUAL Cadena:chain {: asignarVariable(nameVar.toString(), chain.toString()); :}
+                | NomVariable:nameVar IGUAL num:value {: asignarVariable(nameVar.toString(), num.toString()); :}
+                ;
+
+    num ::= NumEntero:numInt {: RESULT = numInt.toString(); :}
+        | NumDecimal:numDecimal {: RESULT = numDecimal.toString(); :}
+        | operacion:operation {: RESULT = operation.toString(); :}
         ;
+
+    operacion ::= NumEntero:numInt1 operando:op NumEntero:numInt2 {: RESULT = operacion(numInt1.toString(), op.toString(), NumInt2.toString());  :}
+            | NumEntero:numInt operando NomVariable:nameVar {: RESULT = operacion(numInt, op, nameVar); :}
+            | NomVariable:nameVar1 operando NomVariable:nameVar2  {: RESULT = operacion(nameVar1, op, nameVar2); :}
+            | NomVariable:nameVar operando NumEntero:numInt {: RESULT = operacion(nameVar, op, numInt); :}
+            ;
+
+    operando ::= MAS {: RESULT =  "+" :}
+            | MENOS {: RESULT = "-" :}
+            | POR {: RESULT = "*" :}
+            | DIV {: RESULT = "/" :}
+            ;
+
+/*0*/ escritura ::= ESCRIBIR PAR_A escribir:write PAR_C PUNTO_COMA {: RESULT = escribir(write); :}
+                ;
+
+    escribir ::= NomVariable:nameVar {: RESULT = nameVar; :}
+            | Cadena:text {: RESULT = text; :}
+            ;
+
+/*0*/ lectura ::= LEER PAR_A COMILLA NomVariable:nameVar COMILLA PAR_C PUNTO_COMA {: RESULT = lectura(nameVar); :}
+            ;
+
+/*0*/ condicional :: si
+                | si sino
+                ;
+
+    si ::= SI PAR_A COMILLA condicion COMILLA PAR_C instr
+        ;
+
+    condicion ::= NomVariable comparador NomVariable
+                | NomVariable comparador NumEntero
+                | NumEntero comparador NumEntero
+                ;
+
+    comparador ::= IGUAL IGUAL
+                | MAYOR
+                | MENOR
+                | MAYOR IGUAL
+                | MENOR IGUAL
+                | DIF IGUAL
+                ;
+    
+    instr ::= ejecucion
+            ;
+
+    sino ::= SINO instr
+        ;
+
+/*0*/ ciclo ::= para
+        ;
+
+    para ::= PARA PAR_A param PAR_C instr
+        ;
+
+    param ::= PAR_A NumEntero COMA NumEntero PAR_C
+            ;
