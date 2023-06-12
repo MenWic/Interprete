@@ -1,4 +1,4 @@
-package menwic.interprete.analizadores.a_sintactico.jcup;
+package menwic.interprete.analizadores.a_sintactico;
 
 /**
  *
@@ -10,8 +10,7 @@ public class Variable {
     private String valor;
 
     //Constructor
-    public Variable(String tipo, String nombre, String valor) {
-        this.tipo = tipo;
+    public Variable(String nombre, String valor) {
         this.nombre = nombre;
         this.valor = valor;
     }

@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import menwic.interprete.analizadores.a_lexico.Token;
+import menwic.interprete.analizadores.a_sintactico.parser;
 
 /**
  *
@@ -174,21 +175,19 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
         //Instancia de Analizador Lexico
         Lexer lex = new Lexer(new StringReader(jTextAreaEntrada.getText())); //Brindamos la cadena de texto del jTextArea
-
+        //Instancia de Analizador Sintactico
+        parser sint = new parser(lex, jTextAreaSalida);
         try {
-            Token token = lex.yylex(); //yylex es pasar siguiente token
-            while (token != null) {
-                jTextAreaSalida.append(token.toString() + "\n");
-                System.out.println(token.toString() + "\n");
-                token = lex.yylex();
+            jTextAreaSalida.setText("");
+            sint.parse();
+            } catch (Exception ex) {
+                Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (Exception e) {
-            Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, e);
-        }
     }//GEN-LAST:event_jButtonCorrerActionPerformed
 
     private void jButtonBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarActionPerformed
-        // TODO add your handling code here:
+        
+        jTextAreaSalida.setText("");
     }//GEN-LAST:event_jButtonBorrarActionPerformed
 
     private void jButtonSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalirActionPerformed

@@ -1,14 +1,16 @@
 package menwic.interprete.analizadores.a_lexico;
 
 /*Codigo de importacion*/
-//import java_cup.runtime.*;
+import java_cup.runtime.Symbol;
+import menwic.interprete.analizadores.a_sintactico.sym;
+
 %%
 %class Lexer
 %line   
 %column
 %public
 %unicode
-%type Token /* %cup //Tronar %type token */
+%cup //Tronar %type token
 
 /*PALABRAS RESERVADAS*/
 ENTERO = [E][n][t][e][r][o]
@@ -43,13 +45,12 @@ PUNTO_COMA = ";"
 //CARAC_ENTRADA = [^\r\n]
 TERM_LINEA = \r|\n|(\r\n)
 ESPACIO_BLANCO= {TERM_LINEA} | ( \t\f)
-LETRA = \p{Letter} //[a-z]|[A-Z]
-DIGITO = \p{Digit} //[0-9]
+LETRA = [a-z]|[A-Z]
 
-NumEntero = {DIGITO}+
+NumEntero = \p{Digit}+
 NumDecimal = {NumEntero}\.{NumEntero}
 NomVariable = ({LETRA}|{GUION_B})({LETRA}|{GUION_B}|{NumEntero})*
-Cadena ={COMILLA}({LETRA}|{NumEntero}|{NumDecimal}|{ESPACIO_BLANCO}|\W )*{COMILLA}
+Cadena ={COMILLA} [^\n]* {COMILLA}
 
 %init{
     yyline=1;
@@ -59,30 +60,36 @@ Cadena ={COMILLA}({LETRA}|{NumEntero}|{NumDecimal}|{ESPACIO_BLANCO}|\W )*{COMILL
 %%
 
 /*RETURN DE TOKENS*/
-{ENTERO}        {return (new Token(yytext(),yyline,yycolumn));}
-                /*return new Symbol(ParserSym.ENTERO,yyline,yycolumn,yytext());*/
-{FLOTANTE}      {return (new Token(yytext(),yyline,yycolumn));}
-{TEXTO}         {return (new Token(yytext(),yyline,yycolumn));}
+{ENTERO}        {return new Symbol(sym.ENTERO,yyline,yycolumn,yytext());}           
+{FLOTANTE}      {return new Symbol(sym.FLOTANTE,yyline,yycolumn,yytext());}
+{TEXTO}         {return new Symbol(sym.TEXTO,yyline,yycolumn,yytext());}
 
-{ESCRIBIR}      {return (new Token(yytext(),yyline,yycolumn));}
-{LEER}          {return (new Token(yytext(),yyline,yycolumn));}
-{SI}            {return (new Token(yytext(),yyline,yycolumn));}
-{SINO}          {return (new Token(yytext(),yyline,yycolumn));}
-{PARA}          {return (new Token(yytext(),yyline,yycolumn));}
+{ESCRIBIR}      {return new Symbol(sym.ESCRIBIR,yyline,yycolumn,yytext());}
+{LEER}          {return new Symbol(sym.LEER,yyline,yycolumn,yytext());}
+{SI}            {return new Symbol(sym.SI,yyline,yycolumn,yytext());}
+{SINO}          {return new Symbol(sym.SINO,yyline,yycolumn,yytext());}
+{PARA}          {return new Symbol(sym.PARA,yyline,yycolumn,yytext());}
 
-{IGUAL}         {return (new Token(yytext(),yyline,yycolumn));}
-{GUION_B}       {return (new Token(yytext(),yyline,yycolumn));}
-{PAR_A}         {return (new Token(yytext(),yyline,yycolumn));}
-{PAR_C}         {return (new Token(yytext(),yyline,yycolumn));}
-{COMA}          {return (new Token(yytext(),yyline,yycolumn));}
-{PUNTO_COMA}    {return (new Token(yytext(),yyline,yycolumn));}
+{IGUAL}         {return new Symbol(sym.IGUAL,yyline,yycolumn,yytext());}
+{GUION_B}       {return new Symbol(sym.GUION_B,yyline,yycolumn,yytext());}
+{PAR_A}         {return new Symbol(sym.PAR_A,yyline,yycolumn,yytext());}
+{PAR_C}         {return new Symbol(sym.PAR_C,yyline,yycolumn,yytext());}
+{COMA}          {return new Symbol(sym.COMA,yyline,yycolumn,yytext());}
+{PUNTO_COMA}    {return new Symbol(sym.PUNTO_COMA,yyline,yycolumn,yytext());}
 
-{LETRA}          {return (new Token(yytext(),yyline,yycolumn));}
-{DIGITO}         {return (new Token(yytext(),yyline,yycolumn));}
-{NumEntero}      {return (new Token(yytext(),yyline,yycolumn));}
-{NumDecimal}     {return (new Token(yytext(),yyline,yycolumn));}
-{NomVariable}    {return (new Token(yytext(),yyline,yycolumn));}
-{Cadena}         {return (new Token(yytext(),yyline,yycolumn));}
+{NumEntero}      {return new Symbol(sym.NumEntero,yyline,yycolumn,yytext());}
+{NumDecimal}     {return new Symbol(sym.NumDecimal,yyline,yycolumn,yytext());}
+{NomVariable}    {return new Symbol(sym.NomVariable,yyline,yycolumn,yytext());}
+{Cadena}         {return new Symbol(sym.Cadena,yyline,yycolumn,yytext());}
+
+{MAS}           {return new Symbol(sym.MAS,yyline,yycolumn,yytext());}
+{MENOS}         {return new Symbol(sym.MENOS,yyline,yycolumn,yytext());}
+{POR}           {return new Symbol(sym.POR,yyline,yycolumn,yytext());}
+{DIV}           {return new Symbol(sym.DIV,yyline,yycolumn,yytext());}
+{DIF}           {return new Symbol(sym.DIF,yyline,yycolumn,yytext());}
+{MAYOR}         {return new Symbol(sym.MAYOR,yyline,yycolumn,yytext());}
+{MENOR}         {return new Symbol(sym.MENOR,yyline,yycolumn,yytext());}
 
 {ESPACIO_BLANCO} {/*Ignorando*/}
-[^]              {System.out.println("Error: "+yytext());}
+[^]              {return new Symbol(sym.ERROR,yyline,yycolumn,yytext());}
+

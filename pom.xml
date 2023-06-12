@@ -11,4 +11,13 @@
         <maven.compiler.target>15</maven.compiler.target>
         <exec.mainClass>menwic.interprete.Interprete</exec.mainClass>
     </properties>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.github.vbmacher/java-cup-runtime -->
+        <dependency>
+            <groupId>com.github.vbmacher</groupId>
+            <artifactId>java-cup-runtime</artifactId>
+            <version>11b</version>
+        </dependency>
+
+    </dependencies>
 </project>
