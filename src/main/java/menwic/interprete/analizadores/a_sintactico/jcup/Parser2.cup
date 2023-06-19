@@ -1,0 +1,163 @@
+package menwic.interprete.analizadores.a_sintactico;
+
+import menwic.interprete.analizadores.a_lexico.Lexer;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import java_cup.runtime.*;
+
+//class Parser;
+parser code {:
+
+    //Heap que almacena variables
+    private ArrayList<Variable> arrVariables;
+    private javax.swing.JTextArea textArea;
+
+    public parser(Lexer lex, javax.swing.JTextArea text){
+        super(lex);
+
+        this.arrVariables = new ArrayList<>();
+        this.textArea = text;
+    }
+     
+     /*  */
+        String texto = ""; //Texto que iremos acumulando para pasar a Java
+
+        //Getter de txt
+        public String getText() {
+                return texto;
+        }
+
+        //Metodo que recorre el arreglo de casos de un Switch
+        public String recorrerArrCasos(ArrayList<String> casos){
+                String txt = "";
+                for(String s : casos){
+                        txt += s + "\n";
+                }
+                return txt;
+        }
+
+:}
+
+
+//terminals de flex
+terminal Token, IGUAL,MAS, MENOS, POR, DIV, DIF, MAYOR, MENOR, GUION_B, PAR_A, PAR_C, COMILLA, COMA, PUNTO_COMA, DOS_PUNTOS,
+TERM_LINEA, ESPACIO_BLANCO, LETRA, ENTERO, FLOTANTE, TEXTO, NumEntero, NumDecimal, NomVariable, Cadena,
+ESCRIBIR, LEER, SI, SINO, EN_CASO_DE, FIN_EN_CASO_DE, CASO, FIN_CASO, PARA, ERROR;
+
+//no terminales de cup
+non terminal inicio, principales, ejecucion, declaracion, asignacion, numero, operacion, operando, escritura, mensaje, lectura, 
+condicionales, si, condicion, valor, comparador, instruc, sino, conmutador, numerocadena, caso, mientras, ciclos, para, param, tipodato;
+
+non terminal ArrayList<String> casos;
+
+/*-0-*/
+inicio ::= ejecucion inicio {::}
+        | ejecucion {::}
+        ;
+
+/*-1-*/ ejecucion ::= condicionales:cond {: texto += cond.toString() + "\n"; :}
+                | principales:init PUNTO_COMA {: texto += init.toString() + "\n"; :}
+                | ciclos:cycle {: texto += cycle.toString() + "\n"; :}
+                ;
+
+/*1)*/principales ::= declaracion:declare {: RESULT = declare.toString(); :}
+                | asignacion:asign {: RESULT = asign.toString(); :}
+                | escritura:write {: RESULT = write.toString(); :}
+                | lectura:read {: RESULT = read.toString(); :}
+                ;
+
+
+/*1*/ declaracion ::= ENTERO:entero NomVariable:nameVar {: RESULT = "int " + nameVar.toString() +";"; :}
+                | FLOTANTE:flotante NomVariable:nameVar {: RESULT = "float " + nameVar.toString()+";"; :}
+                | TEXTO:string NomVariable:nameVar {: RESULT = "String " + nameVar.toString()+";"; :}
+                ;
+      
+
+/*2*/ asignacion ::= NomVariable:nameVar IGUAL Cadena:text {: RESULT = nameVar + " = " + text + ";"; :}
+                | NomVariable:nameVar IGUAL numero:num {: RESULT = nameVar + " = " + num + ";"; :}
+                ;
+
+    numero ::= NumEntero:numInt {: RESULT = numInt.toString(); :}
+        | NumDecimal:numDec {: RESULT = numDec.toString(); :}
+        | operacion:operation {: RESULT = operation.toString(); :}
+        ;
+
+    operacion ::= NumEntero:numInt1 operando:op NumEntero:numInt2 {: RESULT = numInt1.toString() + op + numInt2.toString();  :}
+                | NumEntero:numInt operando:op NomVariable:nameVar {: RESULT = numInt.toString() + op.toString() + nameVar.toString(); :}
+                | NomVariable:nameVar1 operando:op NomVariable:nameVar2  {: RESULT = nameVar1.toString() + op + nameVar2.toString(); :}
+                | NomVariable:nameVar operando:op NumEntero:numInt {: RESULT = nameVar.toString() + op.toString() + numInt.toString(); :}
+                ; //HACEN FALTA LOS DECIMALES, DECIMAL VARIABLE
+
+    operando ::= MAS {: RESULT =  "+"; :}
+                | MENOS {: RESULT = "-"; :}
+                | POR {: RESULT = "*"; :}
+                | DIV {: RESULT = "/"; :}
+                ;
+
+
+/*3*/ escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "System.out.print("+ message.toString() +");"; :}
+                ;
+
+        mensaje ::= NomVariable:nameVar {: RESULT = nameVar; :}
+                | Cadena:text {: RESULT = text; :}
+                ;
+
+
+/*4*/ lectura ::= LEER PAR_A NomVariable:nameVar  PAR_C {: RESULT = nameVar.toString() + " = " + "JOptionPane.showInputDialog(null, \"Ingrese su dato: \");"; :}
+                ;
+
+
+/*2)*/condicionales ::= si:iff {: RESULT = iff.toString(); :}
+                | si:iff sino:elsee {: RESULT = iff.toString() + elsee.toString(); :}
+                | conmutador:switchh {: RESULT = switchh.toString(); :}
+                ; //CORREGIR??? REVISAR NOMBRES DADOS A LAS VARS
+
+/*5*/ si ::= SI PAR_A condicion:condi PAR_C instruc:instr {: RESULT = "if(" + condi.toString() + "){" + instr.toString() + "}"; :}
+        ;
+
+    condicion ::= valor:val1 comparador:comp valor:val2 {: RESULT = val1.toString() + comp.toString() + val2.toString(); :}
+                ; //FALTA LETRAS
+
+    valor ::= NomVariable:nameVar {: RESULT = nameVar.toString(); :}
+           | NumEntero:numInt {: RESULT = numInt.toString(); :}
+           ;
+
+    comparador ::= IGUAL IGUAL {: RESULT = "=="; :}
+                | MAYOR {: RESULT = ">"; :}
+                | MENOR {: RESULT = "<"; :}
+                | MAYOR IGUAL {: RESULT = ">="; :}
+                | MENOR IGUAL {: RESULT = "<="; :}
+                | DIF IGUAL {: RESULT = "!="; :}
+                ;
+    
+    instruc ::= principales:princ PUNTO_COMA {: RESULT = princ.toString(); :}
+                ; //declara,asigna,lee,escribe
+
+/*6*/ sino ::= SINO instruc:instr {: RESULT =  "else{" + instr.toString() + "}"; :}
+        ;
+
+/*3)*/ciclos ::= para:forr {: RESULT = forr.toString(); :}
+        | mientras {:  :}
+        ; //CORREGIR???
+
+/*7*/para ::= PARA PAR_A param:par PAR_C instruc:instr {: RESULT = "for(" + par + "){" + instr + "}"; :}
+        ;
+
+    param ::= valor:val1 COMA valor:val2 {: RESULT = "int i=" + val1 + "; i<" + val2 + "; i++"; :}
+            ;
+
+/*8*/conmutador ::= EN_CASO_DE PAR_A NomVariable:nameVar PAR_C casos:cases FIN_EN_CASO_DE {: RESULT = "switch(" + nameVar + "){" + recorrerArrCasos(cases) + "}"; :}
+                ;
+
+        casos ::= casos:cases caso:casee {: cases.add(casee.toString()); RESULT = cases; :} //Aggrega el caso al array de casos
+                | caso:casee {: RESULT = new ArrayList<String>(); RESULT.add(casee.toString()); :}
+                ;
+
+        caso ::= CASO numerocadena:numchain DOS_PUNTOS instruc:instr FIN_CASO {: RESULT = "case " + numchain.toString() + ":\n" + instr + "\nbreak;"; :}
+        ;
+
+        numerocadena ::= NumEntero:num {: RESULT = num.toString(); :} //solo num enteros
+                | Cadena:text {: RESULT = text.toString(); :}
+                ;
+
+/* LA MOTOOOOOO */

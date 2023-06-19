@@ -181,6 +181,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         try {
             jTextAreaSalida.setText("");
             sint.parse();
+            System.out.println(sint.getText());
             } catch (Exception ex) {
                 Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
             }
