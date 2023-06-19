@@ -1,12 +1,12 @@
 package menwic.interprete.GUI;
 
+import java.io.File;
 import menwic.interprete.analizadores.a_lexico.Lexer;
 
 import java.io.StringReader;
 import static java.lang.System.exit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import menwic.interprete.analizadores.a_lexico.Token;
 import menwic.interprete.analizadores.a_sintactico.parser;
 
 /**
@@ -14,6 +14,11 @@ import menwic.interprete.analizadores.a_sintactico.parser;
  * @author lamr4
  */
 public class JFramePrincipal extends javax.swing.JFrame {
+
+    private final String NAME = "Codigo.java";
+    private String pathRelative = System.getProperty("user.dir");
+    private String pathPackage = "main.java.menwic.interprete.analizadores.a_sintactico.jcup"; //PARA QUE ES?
+    private String path = pathRelative + File.separator + "src" + File.separator + pathPackage.replace(".", File.separator);
 
     /**
      * Creates new form JFramePrincipal
@@ -182,13 +187,14 @@ public class JFramePrincipal extends javax.swing.JFrame {
             jTextAreaSalida.setText("");
             sint.parse();
             System.out.println(sint.getText());
-            } catch (Exception ex) {
-                Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (Exception ex) {
+            Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_jButtonCorrerActionPerformed
 
     private void jButtonBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarActionPerformed
-        
+
         jTextAreaSalida.setText("");
     }//GEN-LAST:event_jButtonBorrarActionPerformed
 
@@ -210,16 +216,24 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(JFramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFramePrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(JFramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFramePrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(JFramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFramePrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JFramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFramePrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 

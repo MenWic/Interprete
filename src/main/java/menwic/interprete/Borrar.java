@@ -1,5 +1,7 @@
 package menwic.interprete;
 
+import java.io.BufferedWriter;
+
 /**
  *
  * @author lamr4
@@ -42,7 +44,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author yefri
+ * @author 
  */
 public class Window extends javax.swing.JFrame {
 
@@ -51,7 +53,7 @@ public class Window extends javax.swing.JFrame {
      */
     private final String NAME = "Code.java";
     private String pathRelative = System.getProperty("user.dir");
-    private String pathPackage = "main.java.com.yefrig.compilerapp.cup";
+    private String pathPackage = "main.java.menwic.interprete.analizadores.a_sintactico";
     private String path = pathRelative + File.separator + "src" + File.separator + pathPackage.replace(".", File.separator);
 
     public Window() {
