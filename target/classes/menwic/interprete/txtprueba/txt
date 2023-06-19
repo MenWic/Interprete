@@ -17,7 +17,7 @@ Leer(n);
 Leer(t);
 
 Si(n==10)
-   Leer(n);
+   Escribir(n);
 Sino
    Escribir("No se encontro la var");
 
@@ -26,9 +26,9 @@ Escribir("hola");
 
 EnCasoDe(n)
    Caso 1:
-     Escribir("caso 1");
+     Escribir("switch, n es 1");
    FinCaso
    Caso 10:
-     Escribir("caso 10");
+     Escribir("switch, n es 10");
    FinCaso
 FinEnCasoDe

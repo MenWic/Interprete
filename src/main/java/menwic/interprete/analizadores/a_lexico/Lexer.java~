@@ -792,7 +792,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             }
           case 55: break;
           case 24: 
-            { return new Symbol(sym.CASO,yyline,yycolumn,yycolumn,yytext());
+            { return new Symbol(sym.CASO,yyline,yycolumn,yytext());
             }
           case 56: break;
           case 25: 

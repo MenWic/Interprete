@@ -225,13 +225,12 @@ public class parser extends java_cup.runtime.lr_parser {
 
     //Heap que almacena variables
     private ArrayList<Variable> arrVariables;
-    private javax.swing.JTextArea textArea;
+    //private javax.swing.JTextArea textArea;
+
 
     public parser(Lexer lex, javax.swing.JTextArea text){
         super(lex);
-
         this.arrVariables = new ArrayList<>();
-        this.textArea = text;
     }
      
      /*  */
@@ -250,6 +249,43 @@ public class parser extends java_cup.runtime.lr_parser {
                 }
                 return txt;
         }
+
+        //Metodo para guardar variable al declararla
+        public void guardarVariable(String dataType, String nameVar){
+                arrVariables.add(new Variable(dataType,nameVar));
+        }
+
+        //Metodo para identificar tipo primitivo de la variable
+        public String obtenerTipoVariable(String nameVar) {
+                String resultado = "";
+                Variable var = buscarVariable(nameVar);
+
+                if (var != null) {
+                        switch (var.getTipo()) {
+                                case "int":
+                                        return "int";
+                                case "float":
+                                        return "float";
+                                case "String":
+                                        return "String";
+                        }
+                } else {
+                        //
+        }
+        return resultado;
+    }
+
+        //Metodo para encontrar una variable declarada previamente
+        public Variable buscarVariable(String nameVar){
+                for(Variable var : arrVariables){
+                        if(var.getNombre().equals(nameVar)){
+                                return var;
+                        }
+                }
+                return null;
+        }
+
+
 
 
 
@@ -403,7 +439,7 @@ class CUP$parser$actions {
 		int nameVarleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int nameVarright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object nameVar = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = "int " + nameVar.toString() +";"; 
+		 guardarVariable("int",nameVar.toString()); RESULT = "int " + nameVar.toString() +";"; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("declaracion",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -418,7 +454,7 @@ class CUP$parser$actions {
 		int nameVarleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int nameVarright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object nameVar = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = "float " + nameVar.toString()+";"; 
+		 guardarVariable("float",nameVar.toString()); RESULT = "float " + nameVar.toString()+";"; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("declaracion",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -433,7 +469,7 @@ class CUP$parser$actions {
 		int nameVarleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int nameVarright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object nameVar = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = "String " + nameVar.toString()+";"; 
+		 guardarVariable("String",nameVar.toString()); RESULT = "String " + nameVar.toString()+";"; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("declaracion",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -619,7 +655,7 @@ class CUP$parser$actions {
 		int messageleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int messageright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object message = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 RESULT = "System.out.print("+ message.toString() +");"; 
+		 RESULT = "jTextAreaSalida.append(String.valueOf("+ message.toString() +"));"; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("escritura",8, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -655,7 +691,15 @@ class CUP$parser$actions {
 		int nameVarleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int nameVarright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object nameVar = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 RESULT = nameVar.toString() + " = " + "JOptionPane.showInputDialog(null, \"Ingrese su dato: \");"; 
+		 String result = obtenerTipoVariable(buscarVariable(nameVar.toString()).getNombre());
+                        if(result.equals("int")){
+                                RESULT = nameVar.toString() + " = " + "Integer.parseInt(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
+                        } else if(result.equals("float")){
+                                RESULT = nameVar.toString() + " = " + "Float.parseFloat(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
+                        }       else{
+                                RESULT = nameVar.toString() + " = " + "JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\");";
+                        }
+                          
               CUP$parser$result = parser.getSymbolFactory().newSymbol("lectura",10, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

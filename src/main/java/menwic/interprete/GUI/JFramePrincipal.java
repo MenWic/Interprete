@@ -1,13 +1,31 @@
 package menwic.interprete.GUI;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import menwic.interprete.analizadores.a_lexico.Lexer;
-
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
+
+import java.lang.reflect.Method;
 import static java.lang.System.exit;
+import java.lang.reflect.InvocationTargetException;
+
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import menwic.interprete.analizadores.a_lexico.Lexer;
 import menwic.interprete.analizadores.a_sintactico.parser;
+
 
 /**
  *
@@ -17,7 +35,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
     private final String NAME = "Codigo.java";
     private String pathRelative = System.getProperty("user.dir");
-    private String pathPackage = "main.java.menwic.interprete.analizadores.a_sintactico.jcup"; //PARA QUE ES?
+    private String pathPackage = "main.java.menwic.interprete.analizadores.a_sintactico"; //PARA QUE ES?
     private String path = pathRelative + File.separator + "src" + File.separator + pathPackage.replace(".", File.separator);
 
     /**
@@ -182,17 +200,94 @@ public class JFramePrincipal extends javax.swing.JFrame {
         //Instancia de Analizador Lexico
         Lexer lex = new Lexer(new StringReader(jTextAreaEntrada.getText())); //Brindamos la cadena de texto del jTextArea
         //Instancia de Analizador Sintactico
-        parser sint = new parser(lex, jTextAreaSalida);
+        parser sint = new parser(lex, jTextAreaSalida);  //Brindamos texto a analizar y area para outputs
+        
         try {
             jTextAreaSalida.setText("");
+            String code = "";
+            code += "package menwic.interprete.analizadores.a_sintactico;\n";
+            code += "import java.util.ArrayList;\n"
+                    + "import javax.swing.JOptionPane;\n\n";
+            code += "public class Codigo {\n";
+            code += "\tpublic static void MainCodigo(javax.swing.JTextArea jTextAreaSalida){\n";
+            
             sint.parse();
-            System.out.println(sint.getText());
+            //Obtener texto concat
+            code += sint.getText();
+            code += "\t}\n}";
+            System.out.print(code); //Muestra codigo concatenado en COnsola
+            crearArchivo(code);
+            compilarArchivo();
+            ejecutarArchivo();
+            
+            
         } catch (Exception ex) {
             Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }//GEN-LAST:event_jButtonCorrerActionPerformed
 
+    //
+    private void crearArchivo(String code) {
+        try {
+            File file = new File(path);
+            if (file.exists()) {
+                File f = new File(file, NAME);
+                FileWriter fw = new FileWriter(f);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(code);
+                bw.close();
+                bw.close();
+            } else {
+                System.out.println("No existe el Archivo.");
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    //
+    private void compilarArchivo() {
+        try {
+            String comandCompile = "javac " + path + File.separator + NAME;
+            
+            Process process = Runtime.getRuntime().exec(comandCompile);
+            int result = process.waitFor();
+
+            if (result == 0) {
+                JOptionPane.showMessageDialog(this,"Archivo Java compilado exitosamente");
+            } else {
+                System.out.println("Error al compilar el archivo Java");
+                // Leer la salida de error del proceso de compilación
+                BufferedReader br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    int startIndex=line.indexOf("error:");
+                     String error=line.substring(startIndex);
+                     jTextAreaSalida.append("Error semantico: "+error+"\n");
+                }
+                br.close();
+                return;
+            }
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Error al compilar el archivo Java: " + e.getMessage());
+            return;
+        }
+        this.ejecutarArchivo(); //Metodo que ejecuta la clase
+    }
+    
+    //
+   private void ejecutarArchivo(){
+        try {
+            File pathClass = new File(path+File.separator+"Codigo.class");
+            URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{pathClass.toURI().toURL()});
+            Class<?> clase = classLoader.loadClass("menwic.interprete.analizadores.a_sintactico.Codigo");
+            Method metodo = clase.getDeclaredMethod("MainCodigo", JTextArea.class);
+            metodo.invoke(null, this.jTextAreaSalida);  // Invocar el método pasando el objeto JTextArea como parámetro
+        } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException | InvocationTargetException | MalformedURLException e) {
+            System.out.println("Error al ejecutar el método: " + e.getMessage());
+        }
+    }
+    
     private void jButtonBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarActionPerformed
 
         jTextAreaSalida.setText("");

@@ -10,13 +10,12 @@ parser code {:
 
     //Heap que almacena variables
     private ArrayList<Variable> arrVariables;
-    private javax.swing.JTextArea textArea;
+    //private javax.swing.JTextArea textArea;
+
 
     public parser(Lexer lex, javax.swing.JTextArea text){
         super(lex);
-
         this.arrVariables = new ArrayList<>();
-        this.textArea = text;
     }
      
      /*  */
@@ -35,6 +34,43 @@ parser code {:
                 }
                 return txt;
         }
+
+        //Metodo para guardar variable al declararla
+        public void guardarVariable(String dataType, String nameVar){
+                arrVariables.add(new Variable(dataType,nameVar));
+        }
+
+        //Metodo para identificar tipo primitivo de la variable
+        public String obtenerTipoVariable(String nameVar) {
+                String resultado = "";
+                Variable var = buscarVariable(nameVar);
+
+                if (var != null) {
+                        switch (var.getTipo()) {
+                                case "int":
+                                        return "int";
+                                case "float":
+                                        return "float";
+                                case "String":
+                                        return "String";
+                        }
+                } else {
+                        //
+        }
+        return resultado;
+    }
+
+        //Metodo para encontrar una variable declarada previamente
+        public Variable buscarVariable(String nameVar){
+                for(Variable var : arrVariables){
+                        if(var.getNombre().equals(nameVar)){
+                                return var;
+                        }
+                }
+                return null;
+        }
+
+
 
 :}
 
@@ -67,9 +103,9 @@ inicio ::= ejecucion inicio {::}
                 ;
 
 
-/*1*/ declaracion ::= ENTERO:entero NomVariable:nameVar {: RESULT = "int " + nameVar.toString() +";"; :}
-                | FLOTANTE:flotante NomVariable:nameVar {: RESULT = "float " + nameVar.toString()+";"; :}
-                | TEXTO:string NomVariable:nameVar {: RESULT = "String " + nameVar.toString()+";"; :}
+/*1*/ declaracion ::= ENTERO:entero NomVariable:nameVar {: guardarVariable("int",nameVar.toString()); RESULT = "int " + nameVar.toString() +";"; :}
+                | FLOTANTE:flotante NomVariable:nameVar {: guardarVariable("float",nameVar.toString()); RESULT = "float " + nameVar.toString()+";"; :}
+                | TEXTO:string NomVariable:nameVar {: guardarVariable("String",nameVar.toString()); RESULT = "String " + nameVar.toString()+";"; :}
                 ;
       
 
@@ -95,15 +131,28 @@ inicio ::= ejecucion inicio {::}
                 ;
 
 
-/*3*/ escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "System.out.print("+ message.toString() +");"; :}
+/*3*/ escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "jTextAreaSalida.append(String.valueOf("+ message.toString() +"));"; :}
                 ;
 
         mensaje ::= NomVariable:nameVar {: RESULT = nameVar; :}
                 | Cadena:text {: RESULT = text; :}
                 ;
 
+                                                                                //SE QUEDA ASI?
+/*4*/ lectura ::= LEER PAR_A NomVariable:nameVar  PAR_C {: String result = obtenerTipoVariable(buscarVariable(nameVar.toString()).getNombre());
+                        //String temp = "";
+                        //temp = Buscar variable().getNombre()
 
-/*4*/ lectura ::= LEER PAR_A NomVariable:nameVar  PAR_C {: RESULT = nameVar.toString() + " = " + "JOptionPane.showInputDialog(null, \"Ingrese su dato: \");"; :}
+                        if(result.equals("int")){
+                                
+                                //RESULT = temp.setValor(*****)
+                                RESULT = nameVar.toString() + " = " + "Integer.parseInt(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
+                        } else if(result.equals("float")){
+                                RESULT = nameVar.toString() + " = " + "Float.parseFloat(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
+                        }       else{
+                                RESULT = nameVar.toString() + " = " + "JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\");";
+                        }
+                          :}
                 ;
 
 
