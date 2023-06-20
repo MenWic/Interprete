@@ -25,6 +25,8 @@ SINO = [S][i][n][o]
 EN_CASO_DE = [E][n][C][a][s][o][D][e]
 CASO = [C][a][s][o]
 FIN_CASO =[F][i][n][C][a][s][o]
+DEPLANO = [D][e][p][l][a][n][o]
+FIN_DEPLANO = [F][i][n][D][e][p][l][a][n][o]
 FIN_EN_CASO_DE = [F][i][n][E][n][C][a][s][o][D][e]
 PARA = [P][a][r][a]
 MIENTRAS = [M][i][e][n][t][r][a][s]
@@ -77,7 +79,9 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 {SINO}          {return new Symbol(sym.SINO,yyline,yycolumn,yytext());}
 {EN_CASO_DE}    {return new Symbol(sym.EN_CASO_DE,yyline,yycolumn,yytext());}
 {CASO}          {return new Symbol(sym.CASO,yyline,yycolumn,yytext());}
-{FIN_CASO}   {return new Symbol(sym.FIN_CASO,yyline,yycolumn,yytext());}
+{FIN_CASO}      {return new Symbol(sym.FIN_CASO,yyline,yycolumn,yytext());}
+{DEPLANO}       {return new Symbol(sym.DEPLANO,yyline,yycolumn,yytext());}
+{FIN_DEPLANO}   {return new Symbol(sym.FIN_DEPLANO,yyline,yycolumn,yytext());}
 {FIN_EN_CASO_DE} {return new Symbol(sym.FIN_EN_CASO_DE,yyline,yycolumn,yytext());}
 {PARA}          {return new Symbol(sym.PARA,yyline,yycolumn,yytext());}
 

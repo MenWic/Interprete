@@ -55,7 +55,7 @@ parser code {:
                                         return "String";
                         }
                 } else {
-                        //
+                        System.out.println(var.getNombre() + " no fue encontrado como Variable.");
         }
         return resultado;
     }
@@ -131,28 +131,23 @@ inicio ::= ejecucion inicio {::}
                 ;
 
 
-/*3*/ escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "jTextAreaSalida.append(String.valueOf("+ message.toString() +"));"; :}
+/*3*/ escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "jTextAreaSalida.append(String.valueOf("+ message.toString() +")+\"\\n\");"; :}
                 ;
 
         mensaje ::= NomVariable:nameVar {: RESULT = nameVar; :}
                 | Cadena:text {: RESULT = text; :}
                 ;
 
-                                                                                //SE QUEDA ASI?
-/*4*/ lectura ::= LEER PAR_A NomVariable:nameVar  PAR_C {: String result = obtenerTipoVariable(buscarVariable(nameVar.toString()).getNombre());
-                        //String temp = "";
-                        //temp = Buscar variable().getNombre()
 
+/*4*/ lectura ::= LEER PAR_A NomVariable:nameVar  PAR_C {: String result = obtenerTipoVariable(nameVar.toString());
                         if(result.equals("int")){
-                                
-                                //RESULT = temp.setValor(*****)
                                 RESULT = nameVar.toString() + " = " + "Integer.parseInt(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
                         } else if(result.equals("float")){
                                 RESULT = nameVar.toString() + " = " + "Float.parseFloat(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
-                        }       else{
+                        } else if(result.equals("String")){
                                 RESULT = nameVar.toString() + " = " + "JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\");";
                         }
-                          :}
+                        :}
                 ;
 
 

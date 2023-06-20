@@ -218,15 +218,13 @@ public class JFramePrincipal extends javax.swing.JFrame {
             System.out.print(code); //Muestra codigo concatenado en COnsola
             crearArchivo(code);
             compilarArchivo();
-            ejecutarArchivo();
-            
             
         } catch (Exception ex) {
             Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButtonCorrerActionPerformed
 
-    //
+    //Metodo que crea un Archivo Java e incrusta el String code a su body
     private void crearArchivo(String code) {
         try {
             File file = new File(path);
@@ -245,12 +243,12 @@ public class JFramePrincipal extends javax.swing.JFrame {
         }
     }
     
-    //
+    //Metodo que ejecuta el comando javac para compilar la clase creada con el code incrustado
     private void compilarArchivo() {
         try {
             String comandCompile = "javac " + path + File.separator + NAME;
             
-            Process process = Runtime.getRuntime().exec(comandCompile);
+            Process process = Runtime.getRuntime().exec(comandCompile); //Proceso del Java runtime
             int result = process.waitFor();
 
             if (result == 0) {
@@ -260,7 +258,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 // Leer la salida de error del proceso de compilación
                 BufferedReader br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                 String line;
-                while ((line = br.readLine()) != null) {
+                while ((line = br.readLine()) != null) { //mientras no llegue al final de linea
                     int startIndex=line.indexOf("error:");
                      String error=line.substring(startIndex);
                      jTextAreaSalida.append("Error semantico: "+error+"\n");
@@ -275,7 +273,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         this.ejecutarArchivo(); //Metodo que ejecuta la clase
     }
     
-    //
+    //Metodo que ejecuta el archivo compilado .class
    private void ejecutarArchivo(){
         try {
             File pathClass = new File(path+File.separator+"Codigo.class");

@@ -15,6 +15,7 @@ public class sym {
   public static final int SI = 30;
   public static final int DOS_PUNTOS = 17;
   public static final int FIN_EN_CASO_DE = 33;
+  public static final int DEPLANO = 36;
   public static final int IGUAL = 3;
   public static final int SINO = 31;
   public static final int LETRA = 20;
@@ -34,14 +35,15 @@ public class sym {
   public static final int MENOR = 10;
   public static final int PAR_C = 13;
   public static final int PAR_A = 12;
-  public static final int ERROR = 37;
+  public static final int ERROR = 39;
   public static final int ESPACIO_BLANCO = 19;
   public static final int MAYOR = 9;
+  public static final int FIN_DEPLANO = 37;
   public static final int NumEntero = 24;
   public static final int GUION_B = 11;
   public static final int NomVariable = 26;
   public static final int LEER = 29;
-  public static final int PARA = 36;
+  public static final int PARA = 38;
   public static final int TEXTO = 23;
   public static final int FLOTANTE = 22;
   public static final int FIN_CASO = 35;
@@ -83,6 +85,8 @@ public class sym {
   "FIN_EN_CASO_DE",
   "CASO",
   "FIN_CASO",
+  "DEPLANO",
+  "FIN_DEPLANO",
   "PARA",
   "ERROR"
   };

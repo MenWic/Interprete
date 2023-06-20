@@ -55,7 +55,7 @@ parser code {:
                                         return "String";
                         }
                 } else {
-                        //
+                        System.out.println(var.getNombre() + " no fue encontrado como Variable.");
         }
         return resultado;
     }
@@ -69,20 +69,17 @@ parser code {:
                 }
                 return null;
         }
-
-
-
 :}
 
 
 //terminals de flex
 terminal Token, IGUAL,MAS, MENOS, POR, DIV, DIF, MAYOR, MENOR, GUION_B, PAR_A, PAR_C, COMILLA, COMA, PUNTO_COMA, DOS_PUNTOS,
 TERM_LINEA, ESPACIO_BLANCO, LETRA, ENTERO, FLOTANTE, TEXTO, NumEntero, NumDecimal, NomVariable, Cadena,
-ESCRIBIR, LEER, SI, SINO, EN_CASO_DE, FIN_EN_CASO_DE, CASO, FIN_CASO, PARA, ERROR;
+ESCRIBIR, LEER, SI, SINO, EN_CASO_DE, FIN_EN_CASO_DE, CASO, FIN_CASO, DEPLANO, FIN_DEPLANO, PARA, ERROR;
 
 //no terminales de cup
 non terminal inicio, principales, ejecucion, declaracion, asignacion, numero, operacion, operando, escritura, mensaje, lectura, 
-condicionales, si, condicion, valor, comparador, instruc, sino, conmutador, numerocadena, caso, mientras, ciclos, para, param, tipodato;
+condicionales, si, condicion, valor, comparador, instruc, sino, conmutador, numerocadena, caso, predeterminado, mientras, ciclos, para, param, tipodato;
 
 non terminal ArrayList<String> casos;
 
@@ -131,28 +128,23 @@ inicio ::= ejecucion inicio {::}
                 ;
 
 
-/*3*/ escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "jTextAreaSalida.append(String.valueOf("+ message.toString() +"));"; :}
+/*3*/ escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "jTextAreaSalida.append(String.valueOf("+ message.toString() +")+\"\\n\");"; :}
                 ;
 
         mensaje ::= NomVariable:nameVar {: RESULT = nameVar; :}
                 | Cadena:text {: RESULT = text; :}
                 ;
 
-                                                                                //SE QUEDA ASI?
-/*4*/ lectura ::= LEER PAR_A NomVariable:nameVar  PAR_C {: String result = obtenerTipoVariable(buscarVariable(nameVar.toString()).getNombre());
-                        //String temp = "";
-                        //temp = Buscar variable().getNombre()
 
+/*4*/ lectura ::= LEER PAR_A NomVariable:nameVar  PAR_C {: String result = obtenerTipoVariable(nameVar.toString());
                         if(result.equals("int")){
-                                
-                                //RESULT = temp.setValor(*****)
                                 RESULT = nameVar.toString() + " = " + "Integer.parseInt(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
                         } else if(result.equals("float")){
                                 RESULT = nameVar.toString() + " = " + "Float.parseFloat(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
-                        }       else{
+                        } else if(result.equals("String")){
                                 RESULT = nameVar.toString() + " = " + "JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\");";
                         }
-                          :}
+                        :}
                 ;
 
 
@@ -195,7 +187,7 @@ inicio ::= ejecucion inicio {::}
     param ::= valor:val1 COMA valor:val2 {: RESULT = "int i=" + val1 + "; i<" + val2 + "; i++"; :}
             ;
 
-/*8*/conmutador ::= EN_CASO_DE PAR_A NomVariable:nameVar PAR_C casos:cases FIN_EN_CASO_DE {: RESULT = "switch(" + nameVar + "){" + recorrerArrCasos(cases) + "}"; :}
+/*8*/conmutador ::= EN_CASO_DE PAR_A NomVariable:nameVar PAR_C casos:cases predeterminado:def FIN_EN_CASO_DE {: RESULT = "switch(" + nameVar + "){" + recorrerArrCasos(cases) + def.toString() + "}"; :}
                 ;
 
         casos ::= casos:cases caso:casee {: cases.add(casee.toString()); RESULT = cases; :} //Aggrega el caso al array de casos
@@ -208,5 +200,8 @@ inicio ::= ejecucion inicio {::}
         numerocadena ::= NumEntero:num {: RESULT = num.toString(); :} //solo num enteros
                 | Cadena:text {: RESULT = text.toString(); :}
                 ;
+        
+        predeterminado ::= DEPLANO DOS_PUNTOS instruc:instr FIN_DEPLANO {: RESULT = "default:" + instr + "break;"; :}
+                        ;
 
 /* LA MOTOOOOOO */
