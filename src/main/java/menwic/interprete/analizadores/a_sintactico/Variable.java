@@ -9,18 +9,13 @@ public class Variable {
     private String nombre;
     private String valor;
 
-    //Constructor
-    public Variable(String nombre, String valor) {
+    // Constructor para Declaracion
+    public Variable(String tipo, String nombre) {
+        this.tipo = tipo;
         this.nombre = nombre;
-        this.valor = valor;
-    }
-    public Variable(String tipo,String nombre, String valor) {
-        this.nombre = nombre;
-        this.tipo=tipo;
-        this.valor = valor;
     }
 
-    //Getters y Setters
+    // Getters y Setters
     public String getTipo() {
         return tipo;
     }
@@ -41,8 +36,9 @@ public class Variable {
         return valor;
     }
 
+    //Metodo usado para asignacion de variable
     public void setValor(String valor) {
         this.valor = valor;
     }
-    
+
 }

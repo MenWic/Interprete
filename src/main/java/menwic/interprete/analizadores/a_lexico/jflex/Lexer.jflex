@@ -22,7 +22,15 @@ ESCRIBIR = [E][s][c][r][i][b][i][r]
 LEER = [L][e][e][r]
 SI = [S][i]
 SINO = [S][i][n][o]
+EN_CASO_DE = [E][n][C][a][s][o][D][e]
+CASO = [C][a][s][o]
+FIN_CASO =[F][i][n][C][a][s][o]
+DEPLANO = [D][e][p][l][a][n][o]
+FIN_DEPLANO = [F][i][n][D][e][p][l][a][n][o]
+FIN_EN_CASO_DE = [F][i][n][E][n][C][a][s][o][D][e]
 PARA = [P][a][r][a]
+MIENTRAS = [M][i][e][n][t][r][a][s]
+
 
 /*SYMBOLOS TERMINALES*/
 IGUAL = "="
@@ -40,6 +48,7 @@ PAR_C = "\)"
 COMILLA = "\""
 COMA = ","
 PUNTO_COMA = ";"
+DOS_PUNTOS = ":"
 
 /*EXPRESIONES REGULARES*/
 //CARAC_ENTRADA = [^\r\n]
@@ -68,6 +77,12 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 {LEER}          {return new Symbol(sym.LEER,yyline,yycolumn,yytext());}
 {SI}            {return new Symbol(sym.SI,yyline,yycolumn,yytext());}
 {SINO}          {return new Symbol(sym.SINO,yyline,yycolumn,yytext());}
+{EN_CASO_DE}    {return new Symbol(sym.EN_CASO_DE,yyline,yycolumn,yytext());}
+{CASO}          {return new Symbol(sym.CASO,yyline,yycolumn,yytext());}
+{FIN_CASO}      {return new Symbol(sym.FIN_CASO,yyline,yycolumn,yytext());}
+{DEPLANO}       {return new Symbol(sym.DEPLANO,yyline,yycolumn,yytext());}
+{FIN_DEPLANO}   {return new Symbol(sym.FIN_DEPLANO,yyline,yycolumn,yytext());}
+{FIN_EN_CASO_DE} {return new Symbol(sym.FIN_EN_CASO_DE,yyline,yycolumn,yytext());}
 {PARA}          {return new Symbol(sym.PARA,yyline,yycolumn,yytext());}
 
 {IGUAL}         {return new Symbol(sym.IGUAL,yyline,yycolumn,yytext());}
@@ -76,6 +91,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 {PAR_C}         {return new Symbol(sym.PAR_C,yyline,yycolumn,yytext());}
 {COMA}          {return new Symbol(sym.COMA,yyline,yycolumn,yytext());}
 {PUNTO_COMA}    {return new Symbol(sym.PUNTO_COMA,yyline,yycolumn,yytext());}
+{DOS_PUNTOS}     {return new Symbol(sym.DOS_PUNTOS,yyline,yycolumn,yytext());}
 
 {NumEntero}      {return new Symbol(sym.NumEntero,yyline,yycolumn,yytext());}
 {NumDecimal}     {return new Symbol(sym.NumDecimal,yyline,yycolumn,yytext());}

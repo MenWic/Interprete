@@ -1,0 +1,34 @@
+Entero n;
+
+Texto t;
+
+n =10;
+
+t ="hola";
+
+Escribir(n);
+
+Escribir("ahora");
+
+Escribir(t);
+
+Leer(n);
+
+Leer(t);
+
+Si(n==10)
+   Escribir(n);
+Sino
+   Escribir("No se encontro la var");
+
+Para(0,7)
+Escribir("hola");
+
+EnCasoDe(n)
+   Caso 1:
+     Escribir("switch, n es 1");
+   FinCaso
+   Caso 10:
+     Escribir("switch, n es 10");
+   FinCaso
+FinEnCasoDe
