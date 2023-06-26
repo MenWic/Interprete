@@ -1,5 +1,5 @@
 Entero n;
-n =10;
+n =0;
 Escribir(n);
 
 Texto t;
@@ -12,18 +12,21 @@ Escribir(n);
 Leer(t);
 Escribir(t);
 
-Si(n==10)
+Si(n==10){
    Escribir("n es 10");
-Sino
+}
+Sino{
    Escribir("n no es 10");
+}
 
-Para(0,7)
-Escribir("hola ");
+Para(0,4){
+Escribir("hola");
+}
 
 n=10;
 Escribir(n);
 
-EnCasoDe(n)
+EnCasoDe(n){
    Caso 1:
      Escribir("Uno");
    FinCaso
@@ -32,7 +35,15 @@ EnCasoDe(n)
    FinCaso
    Deplano:
      Escribir("Default, deplano va");
-   FinDeplano
-FinEnCasoDe
+   FinCaso
+}
+
+n=10;
+Escribir(n);
+
+Mientras(n<12){
+   Escribir(n);
+   n = n+1;
+}
 
 Escribir(n);

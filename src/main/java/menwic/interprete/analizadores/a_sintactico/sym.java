@@ -8,50 +8,44 @@ package menwic.interprete.analizadores.a_sintactico;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int CASO = 34;
-  public static final int Token = 2;
-  public static final int POR = 6;
-  public static final int ENTERO = 21;
-  public static final int SI = 30;
-  public static final int DOS_PUNTOS = 17;
-  public static final int FIN_EN_CASO_DE = 33;
-  public static final int DEPLANO = 36;
-  public static final int IGUAL = 3;
-  public static final int SINO = 31;
-  public static final int LETRA = 20;
-  public static final int ESCRIBIR = 28;
-  public static final int TERM_LINEA = 18;
-  public static final int DIV = 7;
-  public static final int Cadena = 27;
-  public static final int PUNTO_COMA = 16;
-  public static final int NumDecimal = 25;
+  public static final int MENOS = 4;
+  public static final int MENOR = 9;
+  public static final int NumEntero = 20;
+  public static final int IGUAL = 2;
+  public static final int LEER = 25;
+  public static final int FIN_CASO = 30;
+  public static final int ERROR = 34;
+  public static final int PAR_C = 11;
+  public static final int EN_CASO_DE = 28;
+  public static final int PAR_A = 10;
+  public static final int DEPLANO = 31;
+  public static final int FLOTANTE = 18;
+  public static final int PARA = 32;
+  public static final int POR = 5;
+  public static final int DOS_PUNTOS = 16;
+  public static final int CASO = 29;
+  public static final int COMA = 14;
+  public static final int Cadena = 23;
+  public static final int MAYOR = 8;
   public static final int EOF = 0;
-  public static final int EN_CASO_DE = 32;
+  public static final int SINO = 27;
+  public static final int DIV = 6;
+  public static final int SI = 26;
+  public static final int ESCRIBIR = 24;
+  public static final int TEXTO = 19;
   public static final int error = 1;
-  public static final int COMILLA = 14;
-  public static final int COMA = 15;
-  public static final int DIF = 8;
-  public static final int MENOS = 5;
-  public static final int MENOR = 10;
-  public static final int PAR_C = 13;
-  public static final int PAR_A = 12;
-  public static final int ERROR = 39;
-  public static final int ESPACIO_BLANCO = 19;
-  public static final int MAYOR = 9;
-  public static final int FIN_DEPLANO = 37;
-  public static final int NumEntero = 24;
-  public static final int GUION_B = 11;
-  public static final int NomVariable = 26;
-  public static final int LEER = 29;
-  public static final int PARA = 38;
-  public static final int TEXTO = 23;
-  public static final int FLOTANTE = 22;
-  public static final int FIN_CASO = 35;
-  public static final int MAS = 4;
+  public static final int LLAVE_C = 13;
+  public static final int NumDecimal = 21;
+  public static final int LLAVE_A = 12;
+  public static final int PUNTO_COMA = 15;
+  public static final int NomVariable = 22;
+  public static final int ENTERO = 17;
+  public static final int MIENTRAS = 33;
+  public static final int MAS = 3;
+  public static final int DIF = 7;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
-  "Token",
   "IGUAL",
   "MAS",
   "MENOS",
@@ -60,16 +54,13 @@ public class sym {
   "DIF",
   "MAYOR",
   "MENOR",
-  "GUION_B",
   "PAR_A",
   "PAR_C",
-  "COMILLA",
+  "LLAVE_A",
+  "LLAVE_C",
   "COMA",
   "PUNTO_COMA",
   "DOS_PUNTOS",
-  "TERM_LINEA",
-  "ESPACIO_BLANCO",
-  "LETRA",
   "ENTERO",
   "FLOTANTE",
   "TEXTO",
@@ -82,12 +73,11 @@ public class sym {
   "SI",
   "SINO",
   "EN_CASO_DE",
-  "FIN_EN_CASO_DE",
   "CASO",
   "FIN_CASO",
   "DEPLANO",
-  "FIN_DEPLANO",
   "PARA",
+  "MIENTRAS",
   "ERROR"
   };
 }
