@@ -233,7 +233,7 @@ public class parser extends java_cup.runtime.lr_parser {
     //private javax.swing.JTextArea textArea;
 
 
-    public parser(Lexer lex, javax.swing.JTextArea text){
+    public parser(Lexer lex, javax.swing.JTextArea text){ //Debo cambiar TextArea por clase Codigo? Yo consideor que no
         super(lex);
         this.arrVariables = new ArrayList<>();
     }
@@ -657,7 +657,7 @@ class CUP$parser$actions {
 		int messageleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int messageright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object message = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 RESULT = "jTextAreaSalida.append(String.valueOf("+ message.toString() +")+\"\\n\");"; 
+		 RESULT = "System.out.println(String.valueOf("+ message.toString() +"));"; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("escritura",8, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

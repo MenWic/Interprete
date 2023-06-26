@@ -8,17 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
-import java.lang.reflect.Method;
 import static java.lang.System.exit;
-import java.lang.reflect.InvocationTargetException;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -26,17 +20,17 @@ import javax.swing.JTextArea;
 import menwic.interprete.analizadores.a_lexico.Lexer;
 import menwic.interprete.analizadores.a_sintactico.parser;
 
-
 /**
  *
  * @author lamr4
  */
 public class JFramePrincipal extends javax.swing.JFrame {
 
-    private final String NAME = "Codigo.java";
-    private String pathRelative = System.getProperty("user.dir");
-    private String pathPackage = "main.java.menwic.interprete.analizadores.a_sintactico"; //PARA QUE ES?
-    private String path = pathRelative + File.separator + "src" + File.separator + pathPackage.replace(".", File.separator);
+    //Constante para nombre de la Clase que generaremos
+    private final String NAME_CLASS = "Codigo";
+    private final String COMPILE = "javac";
+    private final String EXECUTE = "java";
+    //private final String DELETE = "del"; //Windows
 
     /**
      * Creates new form JFramePrincipal
@@ -55,7 +49,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButtonCorrer = new javax.swing.JButton();
+        jButtonCompilar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaSalida = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -65,6 +59,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jButtonSalir = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        jButtonEjecutar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Interprete");
@@ -73,11 +68,11 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(102, 117, 127));
         jPanel1.setForeground(new java.awt.Color(212, 172, 110));
 
-        jButtonCorrer.setText("Play");
-        jButtonCorrer.setToolTipText("Ejecutar");
-        jButtonCorrer.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCompilar.setText("Compilar");
+        jButtonCompilar.setToolTipText("Ejecutar");
+        jButtonCompilar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCorrerActionPerformed(evt);
+                jButtonCompilarActionPerformed(evt);
             }
         });
 
@@ -105,7 +100,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jLabel1.setText("Output:");
 
         jLabel2.setFont(new java.awt.Font("DialogInput", 1, 14)); // NOI18N
-        jLabel2.setText("Terminal:");
+        jLabel2.setText("Input:");
 
         jButtonSalir.setText("Exit");
         jButtonSalir.setToolTipText("Salir");
@@ -119,6 +114,14 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Mini Compiler");
 
+        jButtonEjecutar.setText("Ejecutar");
+        jButtonEjecutar.setToolTipText("Ejecutar");
+        jButtonEjecutar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEjecutarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -130,15 +133,20 @@ public class JFramePrincipal extends javax.swing.JFrame {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(82, 82, 82)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButtonCorrer, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButtonBorrar))
-                                .addGap(77, 77, 77))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(70, 70, 70)
+                                        .addComponent(jButtonSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jButtonEjecutar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jButtonCompilar, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))))
+                                .addGap(67, 67, 67))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(67, 67, 67))))
+                                .addComponent(jButtonBorrar)
+                                .addGap(78, 78, 78))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(158, 158, 158)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -163,11 +171,13 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 .addGap(49, 49, 49)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addComponent(jButtonCorrer, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(74, 74, 74)
+                        .addComponent(jButtonCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44)
+                        .addComponent(jButtonEjecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(60, 60, 60)
                         .addComponent(jButtonBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(108, 108, 108)
+                        .addGap(50, 50, 50)
                         .addComponent(jButtonSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -195,97 +205,149 @@ public class JFramePrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonCorrerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCorrerActionPerformed
+    private void jButtonCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompilarActionPerformed
 
-        //Instancia de Analizador Lexico
-        Lexer lex = new Lexer(new StringReader(jTextAreaEntrada.getText())); //Brindamos la cadena de texto del jTextArea
-        //Instancia de Analizador Sintactico
-        parser sint = new parser(lex, jTextAreaSalida);  //Brindamos texto a analizar y area para outputs
-        
         try {
-            jTextAreaSalida.setText("");
+            //Instancia de Analizador Lexico
+            Lexer lexer = new Lexer(new StringReader(jTextAreaEntrada.getText())); //Brindamos la cadena de texto del jTextArea
+            //Instancia de Analizador Sintactico
+            parser parser = new parser(lexer, jTextAreaSalida);  //Brindamos texto a analizar y area para outputs
+            //Cadena de texto que poseera el paquete e importaciones de la clase que se generara
             String code = "";
-            code += "package menwic.interprete.analizadores.a_sintactico;\n";
-            code += "import java.util.ArrayList;\n"
-                    + "import javax.swing.JOptionPane;\n\n";
+            //code += "package menwic.interprete.analizadores.a_sintactico;\n";
+            code += "import java.util.ArrayList;\n";
+            code += "import javax.swing.JOptionPane;\n\n";
             code += "public class Codigo {\n";
-            code += "\tpublic static void MainCodigo(javax.swing.JTextArea jTextAreaSalida){\n";
-            
-            sint.parse();
-            //Obtener texto concat
-            code += sint.getText();
-            code += "\t}\n}";
-            System.out.print(code); //Muestra codigo concatenado en COnsola
-            crearArchivo(code);
-            compilarArchivo();
-            
-        } catch (Exception ex) {
-            Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButtonCorrerActionPerformed
+            code += "\tpublic static void main(String[] args){\n";
+            //code += "\tpublic static void MainCodigo(javax.swing.JTextArea jTextAreaSalida){\n";
 
+            jTextAreaSalida.setText(""); //Limpiamos Area de Salida
+
+            /* PRIMERO REALIZAMOS ANALIZIS SINTACTICO */
+            parser.parse();
+            code += parser.getText(); //Obtener texto concat
+            code += "\t}\n}";
+            System.out.print(code); //Muestra codigo concatenado en Consola
+
+            /* SEGUNDO CREA ARCHIVO JAVA */
+            this.crearArchivo(code);
+            /* TERCERO COMPILA EL ARCHIVO JAVA*/
+            this.compilarArchivo();
+            /* CUARTO EJECUTA ARCHIVO COMPILADO */
+            //this.ejecutarArchivo();
+        } catch (Exception e) {
+            //Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.print(e.getMessage());
+            /* DEVOLVER LEXEMA DE TOKEN QUE DIO ERROR, Y LINEA Y COLUMNA, NO: e.getMessage() */
+            JOptionPane.showMessageDialog(this, "Error en Compilacion: " + e.getMessage());
+        }
+        JOptionPane.showMessageDialog(this, "Fin de la Compilacion");
+
+    }//GEN-LAST:event_jButtonCompilarActionPerformed
+
+    //Metodo que ejecuta procesos indicando en String el comando e instruccion
+    public Process ejecutarProceso(String comando, String instr) {
+        try {
+            //Comando completo a ejecutar
+            String[] comandos = {comando, instr};
+            //Constructor de proceso
+            ProcessBuilder pb = new ProcessBuilder(comandos);
+            //Redurigur errores de la salida/terminal del proceso
+            pb.redirectErrorStream(true);
+            //Inicio del proceso
+            Process proceso = pb.start();
+            System.out.println("Comando <" + comando + " " + instr + "> ejecutado!");
+            return proceso;
+        } catch (IOException e) {
+            System.out.println("Comando <" + comando + " " + instr + "> fallido!!!");
+            return null;
+        }
+    }
+
+    //Metodo para eliminar archivos
+    /*
+    private void eliminarArchivo() {
+        //Eliminamos los posibles archivos viejos que existan
+        try {
+            Process elimJava = ejecutarProceso(DELETE, NAME_CLASS + ".java");
+            Process elimClass = ejecutarProceso(DELETE, NAME_CLASS + ".class");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "No existe algun archivo inicial .java o .clsss... Continue.");
+        }
+    }
+     */
     //Metodo que crea un Archivo Java e incrusta el String code a su body
     private void crearArchivo(String code) {
+        //Intentamos crear el nuevo Archivo .java
         try {
-            File file = new File(path);
-            if (file.exists()) {
-                File f = new File(file, NAME);
-                FileWriter fw = new FileWriter(f);
-                BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(code);
-                bw.close();
-                bw.close();
-            } else {
-                System.out.println("No existe el Archivo.");
-            }
+            File file = new File(NAME_CLASS + ".java");
+            //if (file.exists()) {
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(code); //Escribe el codigo almacenado en la Clase
+            bw.close();
+            JOptionPane.showMessageDialog(this, "Archivo java creado exitosamente!");
+            //} else {
+            //JOptionPane.showMessageDialog(this, "Error: Archivo java no creado!!!");
+            //}
         } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error: Archivo java no creado!!!");
             Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     //Metodo que ejecuta el comando javac para compilar la clase creada con el code incrustado
     private void compilarArchivo() {
         try {
-            String comandCompile = "javac " + path + File.separator + NAME;
-            
-            Process process = Runtime.getRuntime().exec(comandCompile); //Proceso del Java runtime
-            int result = process.waitFor();
+            //Comando para compilar clase java
+            Process compilacion = ejecutarProceso(COMPILE, NAME_CLASS + ".java");
+            int result = compilacion.waitFor();
 
             if (result == 0) {
-                JOptionPane.showMessageDialog(this,"Archivo Java compilado exitosamente");
+                JOptionPane.showMessageDialog(this, "Archivo Java compilado exitosamente");
+                //this.ejecutarArchivo();
             } else {
-                System.out.println("Error al compilar el archivo Java");
+                JOptionPane.showMessageDialog(this, "Error: Error al compilar archivo .java (waitFor) !!!");
+
                 // Leer la salida de error del proceso de compilación
-                BufferedReader br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                String line;
-                while ((line = br.readLine()) != null) { //mientras no llegue al final de linea
-                    int startIndex=line.indexOf("error:");
-                     String error=line.substring(startIndex);
-                     jTextAreaSalida.append("Error semantico: "+error+"\n");
+                BufferedReader br = new BufferedReader(new InputStreamReader(compilacion.getErrorStream()));
+                String linea;
+
+                while ((linea = br.readLine()) != null) { //mientras no llegue al final de linea
+                    int initIndex = linea.indexOf("error:");
+                    String error = linea.substring(initIndex);
+                    jTextAreaSalida.append("Error semantico: " + error + "\n");
                 }
                 br.close();
-                return;
             }
         } catch (IOException | InterruptedException e) {
-            System.out.println("Error al compilar el archivo Java: " + e.getMessage());
-            return;
+            JOptionPane.showMessageDialog(this, "Error: En metodo Compilar Archivo...!!!");
         }
-        this.ejecutarArchivo(); //Metodo que ejecuta la clase
     }
-    
+
     //Metodo que ejecuta el archivo compilado .class
-   private void ejecutarArchivo(){
+    private void ejecutarArchivo() throws IOException {
         try {
-            File pathClass = new File(path+File.separator+"Codigo.class");
-            URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{pathClass.toURI().toURL()});
-            Class<?> clase = classLoader.loadClass("menwic.interprete.analizadores.a_sintactico.Codigo");
-            Method metodo = clase.getDeclaredMethod("MainCodigo", JTextArea.class);
-            metodo.invoke(null, this.jTextAreaSalida);  // Invocar el método pasando el objeto JTextArea como parámetro
-        } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException | InvocationTargetException | MalformedURLException e) {
-            System.out.println("Error al ejecutar el método: " + e.getMessage());
+            Process ejecucion = ejecutarProceso(EXECUTE, NAME_CLASS); //Sin el ".class"
+            //Leer las lineas del proceso de ejecucion
+            BufferedReader br = new BufferedReader(new InputStreamReader(ejecucion.getInputStream()));
+            String linea;
+            jTextAreaSalida.setText(""); //Limpiar jTextAreaSalida
+
+            while ((linea = br.readLine()) != null) {
+                jTextAreaSalida.append(linea + "\n");
+            }
+            int result = ejecucion.waitFor();
+            System.out.println("Proceso de ejecucion finalizado!\n");
+            JOptionPane.showMessageDialog(this, "Proceso de ejecucion finalizado!");
+
+        } catch (InterruptedException ex) {
+            JOptionPane.showMessageDialog(this, "Error: Proceso de ejecucion intervenido!!!");
+            Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+
     private void jButtonBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarActionPerformed
 
         jTextAreaSalida.setText("");
@@ -294,6 +356,15 @@ public class JFramePrincipal extends javax.swing.JFrame {
     private void jButtonSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalirActionPerformed
         exit(-1);
     }//GEN-LAST:event_jButtonSalirActionPerformed
+
+    private void jButtonEjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEjecutarActionPerformed
+        try {
+            /* CUARTO EJECUTA ARCHIVO COMPILADO */
+            this.ejecutarArchivo();
+        } catch (IOException ex) {
+            Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonEjecutarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -340,7 +411,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBorrar;
-    private javax.swing.JButton jButtonCorrer;
+    private javax.swing.JButton jButtonCompilar;
+    private javax.swing.JButton jButtonEjecutar;
     private javax.swing.JButton jButtonSalir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

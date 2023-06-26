@@ -13,7 +13,7 @@ parser code {:
     //private javax.swing.JTextArea textArea;
 
 
-    public parser(Lexer lex, javax.swing.JTextArea text){
+    public parser(Lexer lex, javax.swing.JTextArea text){ //Debo cambiar TextArea por clase Codigo? Yo consideor que no
         super(lex);
         this.arrVariables = new ArrayList<>();
     }
@@ -128,7 +128,7 @@ inicio ::= ejecucion inicio {::}
                 ;
 
 
-/*3*/ escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "jTextAreaSalida.append(String.valueOf("+ message.toString() +")+\"\\n\");"; :}
+/*3*/ escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "System.out.println(String.valueOf("+ message.toString() +"));"; :}
                 ;
 
         mensaje ::= NomVariable:nameVar {: RESULT = nameVar; :}
