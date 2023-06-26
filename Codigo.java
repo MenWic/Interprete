@@ -5,9 +5,9 @@ public class Codigo {
 	public static void main(String[] args){
 int n;
 n = 10;
+System.out.println(String.valueOf(n));
 String t;
 t = "hola";
-System.out.println(String.valueOf(n));
 System.out.println(String.valueOf(t));
 n = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el nuevo valor para n:"));
 System.out.println(String.valueOf(n));

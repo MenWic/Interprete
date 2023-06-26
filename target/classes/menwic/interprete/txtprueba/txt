@@ -1,13 +1,14 @@
 Entero n;
 n =10;
+Escribir(n);
+
 Texto t;
 t ="hola";
-
-Escribir(n);
 Escribir(t);
 
 Leer(n);
 Escribir(n);
+
 Leer(t);
 Escribir(t);
 

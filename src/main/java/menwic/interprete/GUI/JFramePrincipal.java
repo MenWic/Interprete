@@ -206,28 +206,30 @@ public class JFramePrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompilarActionPerformed
+        String mensaje;
 
+        //Flujo principal de Compilacion
         try {
             //Instancia de Analizador Lexico
             Lexer lexer = new Lexer(new StringReader(jTextAreaEntrada.getText())); //Brindamos la cadena de texto del jTextArea
             //Instancia de Analizador Sintactico
             parser parser = new parser(lexer, jTextAreaSalida);  //Brindamos texto a analizar y area para outputs
+
             //Cadena de texto que poseera el paquete e importaciones de la clase que se generara
             String code = "";
             //code += "package menwic.interprete.analizadores.a_sintactico;\n";
             code += "import java.util.ArrayList;\n";
             code += "import javax.swing.JOptionPane;\n\n";
             code += "public class Codigo {\n";
-            code += "\tpublic static void main(String[] args){\n";
-            //code += "\tpublic static void MainCodigo(javax.swing.JTextArea jTextAreaSalida){\n";
+            code += "\tpublic static void main(String[] args){\n"; //code += "\tpublic static void MainCodigo(javax.swing.JTextArea jTextAreaSalida){\n";
 
             jTextAreaSalida.setText(""); //Limpiamos Area de Salida
 
             /* PRIMERO REALIZAMOS ANALIZIS SINTACTICO */
-            parser.parse();
-            code += parser.getText(); //Obtener texto concat
-            code += "\t}\n}";
-            System.out.print(code); //Muestra codigo concatenado en Consola
+            parser.parse(); //Si hay errores lexicos, el try muere aqui... y pasa al catch
+            code += parser.getText(); //Insertar texto/body de la clase Codigo.java
+            code += "\t}\n}\n";
+            System.out.print(code); //Muestra String de Codigo.java, en Consola
 
             /* SEGUNDO CREA ARCHIVO JAVA */
             this.crearArchivo(code);
@@ -236,17 +238,20 @@ public class JFramePrincipal extends javax.swing.JFrame {
             /* CUARTO EJECUTA ARCHIVO COMPILADO */
             //this.ejecutarArchivo();
         } catch (Exception e) {
-            //Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            mensaje = "Error!!! En flujo principal \"Compilacion\": ";
+            System.out.print(mensaje); //mostramos en consola
             System.out.print(e.getMessage());
             /* DEVOLVER LEXEMA DE TOKEN QUE DIO ERROR, Y LINEA Y COLUMNA, NO: e.getMessage() */
-            JOptionPane.showMessageDialog(this, "Error en Compilacion: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, mensaje + e.getMessage());
         }
-        JOptionPane.showMessageDialog(this, "Fin de la Compilacion");
-
     }//GEN-LAST:event_jButtonCompilarActionPerformed
 
     //Metodo que ejecuta procesos indicando en String el comando e instruccion
     public Process ejecutarProceso(String comando, String instr) {
+        String mensaje;
+        mensaje = ">" + comando + " " + instr;
+        jTextAreaSalida.append(mensaje + "\n");
+
         try {
             //Comando completo a ejecutar
             String[] comandos = {comando, instr};
@@ -256,10 +261,10 @@ public class JFramePrincipal extends javax.swing.JFrame {
             pb.redirectErrorStream(true);
             //Inicio del proceso
             Process proceso = pb.start();
-            System.out.println("Comando <" + comando + " " + instr + "> ejecutado!");
+            System.out.println(mensaje + ": pass");
             return proceso;
         } catch (IOException e) {
-            System.out.println("Comando <" + comando + " " + instr + "> fallido!!!");
+            System.out.println(mensaje + ": fail");
             return null;
         }
     }
@@ -278,6 +283,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
      */
     //Metodo que crea un Archivo Java e incrusta el String code a su body
     private void crearArchivo(String code) {
+        String mensaje;
+
         //Intentamos crear el nuevo Archivo .java
         try {
             File file = new File(NAME_CLASS + ".java");
@@ -286,28 +293,39 @@ public class JFramePrincipal extends javax.swing.JFrame {
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(code); //Escribe el codigo almacenado en la Clase
             bw.close();
-            JOptionPane.showMessageDialog(this, "Archivo java creado exitosamente!");
-            //} else {
-            //JOptionPane.showMessageDialog(this, "Error: Archivo java no creado!!!");
-            //}
+
+            mensaje = "Archivo " + NAME_CLASS + ".java creado exitosamente!";
+            System.out.println(mensaje); //mostramos en consola
+            JOptionPane.showMessageDialog(this, mensaje);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error: Archivo java no creado!!!");
+            mensaje = "Error! No se pudo crear el archivo " + NAME_CLASS + ".java";
+            System.out.println(mensaje); //mostramos en consola
+            JOptionPane.showMessageDialog(this, mensaje);
             Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     //Metodo que ejecuta el comando javac para compilar la clase creada con el code incrustado
     private void compilarArchivo() {
+        String mensaje;
+
+        //Intentamos compilar el archivo creado (si tiene errores lex el archivo, lanzara error antes de llegar aca)
         try {
             //Comando para compilar clase java
             Process compilacion = ejecutarProceso(COMPILE, NAME_CLASS + ".java");
             int result = compilacion.waitFor();
 
-            if (result == 0) {
-                JOptionPane.showMessageDialog(this, "Archivo Java compilado exitosamente");
+            if (result == 0) { //si ya no espera nada el proceso, todo bien
+                mensaje = "Archivo " + NAME_CLASS + ".java compilado exitosamente";
+                System.out.println(">status: " + mensaje); //mostramos en consola
+                jTextAreaSalida.append(">status: " + mensaje + "\n");
+                JOptionPane.showMessageDialog(this, mensaje);
                 //this.ejecutarArchivo();
-            } else {
-                JOptionPane.showMessageDialog(this, "Error: Error al compilar archivo .java (waitFor) !!!");
+            } else { //si espera algo aun, algo salio mal en compilacion
+                mensaje = "Error! No se pudo compilar el archivo " + NAME_CLASS + ".java";
+                System.out.println(">status: " + mensaje); //mostramos en consola
+                jTextAreaSalida.append(">status: " + mensaje + "\n");
+                JOptionPane.showMessageDialog(this, mensaje);
 
                 // Leer la salida de error del proceso de compilación
                 BufferedReader br = new BufferedReader(new InputStreamReader(compilacion.getErrorStream()));
@@ -321,28 +339,41 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 br.close();
             }
         } catch (IOException | InterruptedException e) {
-            JOptionPane.showMessageDialog(this, "Error: En metodo Compilar Archivo...!!!");
+            mensaje = "Error!!! Hubo un error en el flujo de \"Compilacion\"";
+            System.out.println(mensaje);
+            JOptionPane.showMessageDialog(this, mensaje + ": " + e.getMessage());
         }
     }
 
     //Metodo que ejecuta el archivo compilado .class
     private void ejecutarArchivo() throws IOException {
+        String mensaje;
+
         try {
+            jTextAreaSalida.setText(""); //Limpiar jTextAreaSalida
+            //Inicia formalmente proceso de ejecucion de la clase
             Process ejecucion = ejecutarProceso(EXECUTE, NAME_CLASS); //Sin el ".class"
+            
+            mensaje = "Archivo " + NAME_CLASS + ".class ejecutando exitosamente";
+            System.out.println(">status: " + mensaje); //mostramos en consola
+            jTextAreaSalida.append(">status: " + mensaje + "\n\n");
+            JOptionPane.showMessageDialog(this, mensaje);
+
+            int result = ejecucion.waitFor();
+
             //Leer las lineas del proceso de ejecucion
             BufferedReader br = new BufferedReader(new InputStreamReader(ejecucion.getInputStream()));
             String linea;
-            jTextAreaSalida.setText(""); //Limpiar jTextAreaSalida
 
-            while ((linea = br.readLine()) != null) {
-                jTextAreaSalida.append(linea + "\n");
+            while ((linea = br.readLine()) != null) { //leer linea por linea
+                jTextAreaSalida.append(linea + "\n"); //Vamos agregando lineas leidas al jTextAreaSalida
             }
-            int result = ejecucion.waitFor();
-            System.out.println("Proceso de ejecucion finalizado!\n");
-            JOptionPane.showMessageDialog(this, "Proceso de ejecucion finalizado!");
+            int resultado = ejecucion.waitFor();
+            System.out.println("Ejecucion finalizada!");
+            JOptionPane.showMessageDialog(this, "Ejecucion finalizada!");
 
         } catch (InterruptedException ex) {
-            JOptionPane.showMessageDialog(this, "Error: Proceso de ejecucion intervenido!!!");
+            JOptionPane.showMessageDialog(this, "Error! Hubo un error en el flujo de \"Ejecucion\" " + ex.getMessage());
             Logger.getLogger(JFramePrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -358,6 +389,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonSalirActionPerformed
 
     private void jButtonEjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEjecutarActionPerformed
+        //SACAR DEL TRY-CATCH AL METODO: ejecutarArchivo();
         try {
             /* CUARTO EJECUTA ARCHIVO COMPILADO */
             this.ejecutarArchivo();
