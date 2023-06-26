@@ -338,6 +338,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 }
                 br.close();
             }
+            mensaje = "Compilacion completada!";
+            JOptionPane.showMessageDialog(this, mensaje);
         } catch (IOException | InterruptedException e) {
             mensaje = "Error!!! Hubo un error en el flujo de \"Compilacion\"";
             System.out.println(mensaje);
@@ -370,7 +372,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
             }
             int resultado = ejecucion.waitFor();
             System.out.println("Ejecucion finalizada!");
-            JOptionPane.showMessageDialog(this, "Ejecucion finalizada!");
+            JOptionPane.showMessageDialog(this, "Ejecucion completada!");
 
         } catch (InterruptedException ex) {
             JOptionPane.showMessageDialog(this, "Error! Hubo un error en el flujo de \"Ejecucion\" " + ex.getMessage());
