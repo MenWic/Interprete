@@ -1,7 +1,0 @@
-n=10;
-Escribir(n);
-
-Mientras(n<12)
-   Escribir(n);
-   n = n+1;
-FinMientras

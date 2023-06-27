@@ -28,6 +28,8 @@ FIN_CASO =[F][i][n][C][a][s][o]
 DEPLANO = [D][e][p][l][a][n][o]
 PARA = [P][a][r][a]
 MIENTRAS = [M][i][e][n][t][r][a][s]
+PROCEDIMIENTO = [P][r][o][c][e][d][i][m][i][e][n][t][o]
+FUNCION = [F][u][n][c][i][o][n]
 
 
 /*SYMBOLOS TERMINALES*/
@@ -83,6 +85,8 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 {DEPLANO}       {return new Symbol(sym.DEPLANO,yyline,yycolumn,yytext());}
 {PARA}          {return new Symbol(sym.PARA,yyline,yycolumn,yytext());}
 {MIENTRAS}      {return new Symbol(sym.MIENTRAS,yyline,yycolumn, yytext());}
+{PROCEDIMIENTO} {return new Symbol(sym.PROCEDIMIENTO,yyline,yycolumn,yytext());}
+{FUNCION}       {return new Symbol(sym.FUNCION,yyline,yycolumn,yytext());}
 
 {IGUAL}         {return new Symbol(sym.IGUAL,yyline,yycolumn,yytext());}
 {PAR_A}         {return new Symbol(sym.PAR_A,yyline,yycolumn,yytext());}
@@ -108,4 +112,3 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
 {WhiteSpace} {/*Ignorando*/}
 [^]              {return new Symbol(sym.ERROR,yyline,yycolumn,yytext());}
-
