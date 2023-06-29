@@ -12,6 +12,7 @@ parser code {:
     private ArrayList<Variable> arrVariables; //Heap que almacena variables
     private ArrayList<String> arrProcedimientos; //Heap que almacena Procedimientos
     private ArrayList<String> arrFunciones; //Heap que almacena Funciones
+    String txtFunciones = "";
     //private javax.swing.JTextArea textArea;
 
     //Constructor
@@ -20,6 +21,7 @@ parser code {:
         this.arrVariables = new ArrayList<>(); //Arreglo
         this.arrProcedimientos = new ArrayList<>(); //Arreglo de los nombres de procedimientos
         this.arrFunciones = new ArrayList<>(); //Arreglo de los nombres de funciones
+        //this.txtFunciones = "";
     }
      
      /*  */
@@ -30,14 +32,19 @@ parser code {:
                 return texto;
         }
 
-        /* *************************************************************** */
-        /*
+        //Getter de txt
+        public String getTxtFunciones() {
+                return txtFunciones;
+        }
+
+        /* *************************************************************** 
+        
         public void report_fatal_error(String message, Object info){
             System.out.println("Public void report_fatal_error");
         }
 
         public void syntax_error(Symbol cur_token){
-            System.out.println("Error: "+cur_token.value.toString());
+            System.out.println("Error: "+ cur_token.left + "," + cur_token.right);
         }
 
         public void unrecoveres_syntax_error(Symbol cur_token){
@@ -45,8 +52,8 @@ parser code {:
                 System.out.println("Public void unrecoveredsyntax_Error");
             }
         }
-        */
-        /* ***************************************************************** */
+
+         ***************************************************************** */
 
         //Metodo que recorre el arreglo de casos de un Switch
         public String recorrerArrCasos(ArrayList<String> casos){
@@ -123,6 +130,16 @@ parser code {:
                 arrFunciones.add(func);
         }
 
+        //Metodo para recorrer parametros enviados en llamda de funcion
+        public String recorrerArrParametrosEnviados(ArrayList<String> arrParametrosEnviados) {
+                String result = "";
+
+                for (String pe: arrParametrosEnviados) {
+                        result += pe;
+                } 
+                return result;
+        }
+
         //Metodo para identificar tipo primitivo de la funcion
         //SIN USAR AUN, BORRAR
         /*
@@ -151,42 +168,49 @@ parser code {:
 
 //terminals de flex
 terminal IGUAL,MAS, MENOS, POR, DIV, DIF, MAYOR, MENOR, PAR_A, PAR_C, LLAVE_A, LLAVE_C, COMA, PUNTO_COMA, DOS_PUNTOS,
-ENTERO, FLOTANTE, TEXTO, NumEntero, NumDecimal, NomVariable, Cadena,
-ESCRIBIR, LEER, SI, SINO, EN_CASO_DE, CASO, FIN_CASO, DEPLANO, PARA, MIENTRAS, PROCEDIMIENTO, FUNCION, ERROR;
+ENTERO, FLOTANTE, TEXTO, NumEntero, NumDecimal, NomVariable, Cadena, ESCRIBIR, LEER, SI, SINO, EN_CASO_DE, CASO, FIN_CASO, 
+DEPLANO, PARA, MIENTRAS, PROCEDIMIENTO, FUNCION, RETORNA, ERROR;
 
 //no terminales de cup
-non terminal inicio, preejecucion, proceso, procedimiento, param, funcion, tipoDato, ejecucion, tarea, principales, declaracion, asignacion, numero, operacion, operando, 
-escritura, mensaje, lectura, condicionales, si, condicion, valor, comparador, sino, conmutador, numerocadena, caso, predeterminado,
+non terminal inicio, preejecucion, proceso, proced, param, funcion, tipoDato, retorno, ejecucion, tarea, principales, declaracion, asignacion, numero, operacion, operando, 
+escritura, mensaje, lectura, llamada, parametro_enviado, condicionales, si, condicion, valor, comparador, sino, conmutador, numerocadena, caso, predeterminado,
 ciclos, mientras, para, param_para;
 
-non terminal ArrayList<String> parametros, casos, instruc; //no terminales de tipo ArrayList<String> para alamacenar Strings
+non terminal ArrayList<String> parametros, parametros_enviados, casos, instruc; //no terminales de tipo ArrayList<String> para alamacenar Strings
 
         //Funciones/Procedimientos y Principales (ciclos,condicionales,principales) 
-/*-0-*/inicio ::= preejecucion:preexec ejecucion:exec {: texto += preexec.toString() + exec.toString(); :}
-                | ejecucion:exec {: texto += exec.toString(); :}
+/*-0-*/inicio ::= preejecucion ejecucion {:  :}
+                | ejecucion {:  :}
                 ;
 
 
         //Funciones/Procedimientos recursivamente DUDA: ESTA BIEN ASI LA RECURSIVIDAD? O ES AL REVES?
-/*-1-*/preejecucion ::= proceso:proc preejecucion:preexec {: RESULT = proc.toString() + preexec.toString() + "\n"; :}
-                    | proceso:proc {: RESULT = proc.toString() + "\n"; :}
+/*-1-*/preejecucion ::= proceso preejecucion {:  :} //preejecucion
+                    | proceso {:  :}
                     ;
 
 
         //No terminal: Procedimiento o Funcion
-/*1)*/proceso ::= procedimiento:proced {: texto += proced.toString() + "\n"; :}
-                | funcion:func {: texto += func.toString() + "\n"; :}
+/*1)*/proceso ::= proced:p {: txtFunciones += p.toString() + "\n"; System.out.println(txtFunciones); :}
+                | funcion:func {: txtFunciones += func.toString() + "\n"; :}
                 ;
 
         //DUDA: los parametros:params cuando los guardo?
-/*1*/procedimiento ::= PROCEDIMIENTO NomVariable:nameProced PAR_A parametros:params PAR_C LLAVE_A instruc:instr LLAVE_C {: guardarProcedimiento(nameProced.toString()); RESULT = "public static void " + nameProced.toString() + "(" + recorrerParametros(params) + "){" + recorrerArrInstrucciones(instr) + "}"; :}
-                    | PROCEDIMIENTO NomVariable:nameProced PAR_A PAR_C LLAVE_A instruc:instr LLAVE_C {: guardarProcedimiento(nameProced.toString()); RESULT = "public static void " + nameProced.toString() + "(){" + recorrerArrInstrucciones(instr) + "}"; :}
+        
+/*1*/proced ::= PROCEDIMIENTO NomVariable:nameProced PAR_A parametros:params PAR_C LLAVE_A instruc:instr LLAVE_C {:  guardarProcedimiento(nameProced.toString()); RESULT = "public static void " + nameProced.toString() + "(" + recorrerParametros(params) + "){" + recorrerArrInstrucciones(instr) + "}"; :}
+                    | PROCEDIMIENTO NomVariable:nameProced PAR_A PAR_C LLAVE_A instruc:instr LLAVE_C {:  guardarProcedimiento(nameProced.toString()); RESULT = "public static void " + nameProced.toString() + "(){" + recorrerArrInstrucciones(instr) + "}"; :}
                     ;
 
         //No terminal: Funcion con y sin parametros
-/*2*/funcion ::= FUNCION tipoDato:dataType NomVariable:nameFunc PAR_A parametros:params PAR_C LLAVE_A instruc:instr LLAVE_C {: guardarFuncion(dataType.toString(), nameFunc.toString()); RESULT = "public static " + dataType.toString() + " " + nameFunc.toString() + "(" + recorrerParametros(params) + "){" + recorrerArrInstrucciones(instr) + "}"; :}
-            | FUNCION tipoDato:dataType NomVariable:nameFunc PAR_A PAR_C LLAVE_A instruc:instr LLAVE_C {: guardarFuncion(dataType.toString(), nameFunc.toString()); RESULT = "public static " + dataType.toString() + " " + nameFunc.toString() + "(){" + recorrerArrInstrucciones(instr) + "}"; :}
+/*2*/funcion ::= FUNCION tipoDato:dataType NomVariable:nameFunc PAR_A parametros:params PAR_C LLAVE_A instruc:instr retorno:ret PUNTO_COMA LLAVE_C {: guardarFuncion(dataType.toString(), nameFunc.toString()); RESULT = "public static " + dataType.toString() + " " + nameFunc.toString() + "(" + recorrerParametros(params) + "){" + recorrerArrInstrucciones(instr) + ret.toString() + ";}"; :}
+            | FUNCION tipoDato:dataType NomVariable:nameFunc PAR_A PAR_C LLAVE_A instruc:instr retorno:ret PUNTO_COMA LLAVE_C {: guardarFuncion(dataType.toString(), nameFunc.toString()); RESULT = "public static " + dataType.toString() + " " + nameFunc.toString() + "(){" + recorrerArrInstrucciones(instr) + ret.toString() + ";}"; :}
             ;
+
+        retorno ::= RETORNA NomVariable:var {: buscarVariable(var.toString()); RESULT =  "return " + var.toString(); :}
+                | RETORNA numerocadena:numchain {: RESULT = "return " + numchain.toString(); :}
+                | RETORNA NumDecimal:flot {: RESULT = "return " + flot.toString(); :}
+                ;
+
 
     //DEBEN IR CONCATENADOS EL TIPO Y NOMBRE FUNC PARA GUARDAR EN ARRAYLIST??? 
     tipoDato ::= ENTERO {: RESULT = "int"; :}
@@ -196,25 +220,22 @@ non terminal ArrayList<String> parametros, casos, instruc; //no terminales de ti
 
     //No terminal: ArrayList<params>
     parametros ::= param:par {: RESULT = new ArrayList<>(); RESULT.add(par.toString()); :}
-                | parametros:pars param:par {: pars.add(","+ par.toString()); RESULT = pars; :} 
+                | parametros:pars COMA param:par {: pars.add(","+ par.toString()); RESULT = pars; :} 
                 ;
-    //No terminal: param (singular) que se guardara arriba en arrParametros (ArrayList<params>)
-    param ::= ENTERO NomVariable:nameProcedure {: RESULT = "int_" + nameProcedure.toString(); :}
-            | FLOTANTE NomVariable:nameProcedure {: RESULT= "float_" + nameProcedure.toString(); :}
-            | TEXTO NomVariable:nameProcedure {: RESULT= "String_" + nameProcedure.toString(); :}
-            ;
 
+    //No terminal: param (singular) que se guardara arriba en arrParametros (ArrayList<params>)
+    param ::=  tipoDato:dataType NomVariable:nameProcedure  {: RESULT = dataType.toString() + "_" + nameProcedure.toString(); :}
+           ;
 
         //No terminal: principales, condiciones o ciclos
-/*-2-*/ejecucion ::= tarea:task  {: /*RESULT = task.toString() + exec.toString() + "\n";*/ :} //ejecucion:exec
-                    //| tarea:task {: /*RESULT = task.toString() + "\n";*/ :}
-                    ; /* LE QUITE MULTILNEA PARA AREGLAR ERROR AL COMPILAR CUP, SI LO PONGO, HAY CONFLICTO
-                         ENTRE ejecucion Y LAS PRODUCCIONES DE tarea */
+/*-2-*/ejecucion ::= ejecucion tarea:task {: texto += task.toString(); :} //No mover recursividad xD
+                    | tarea:task {: texto += task.toString(); :}
+                    ;
 
 
-/*-2.1-*/tarea ::= principales:princ PUNTO_COMA {: texto += princ.toString() + "\n"; :}
-                    | condicionales:cond {: texto += cond.toString() + "\n"; :}
-                    | ciclos:cycle {: texto += cycle.toString() + "\n"; :}
+/*-2.1-*/tarea ::= principales:princ PUNTO_COMA {: RESULT = princ.toString() + "\n"; :}
+                    | condicionales:cond {: RESULT = cond.toString() + "\n"; :}
+                    | ciclos:cycle {: RESULT = cycle.toString() + "\n"; :}
                     ;
 
         //No terminal: declara, asigna, escribe, lee
@@ -222,6 +243,7 @@ non terminal ArrayList<String> parametros, casos, instruc; //no terminales de ti
                     | asignacion:asign {: RESULT = asign.toString(); :} //declara_asigna PENDIENTE
                     | escritura:write {: RESULT = write.toString(); :}
                     | lectura:read {: RESULT = read.toString(); :}
+                    | llamada:call {: RESULT = call.toString(); :}
                     ;
 
         //No terminal: declara DUDA: ELIMINO ALIAS DE ENTERO, FLOAT...?
@@ -231,8 +253,10 @@ non terminal ArrayList<String> parametros, casos, instruc; //no terminales de ti
                     ;
       
         //No terminal: asigna
-/*4*/ asignacion ::= NomVariable:nameVar IGUAL Cadena:text {: RESULT = nameVar + " = " + text + ";"; :}
-                | NomVariable:nameVar IGUAL numero:num {: RESULT = nameVar + " = " + num + ";"; :}
+/*4*/ asignacion ::= NomVariable:nameVar IGUAL numero:num{: RESULT = nameVar.toString() + " = " + num.toString() + ";"; :}
+                | NomVariable:nameVar IGUAL Cadena:chain {: RESULT = nameVar.toString() + " = " + chain.toString() + ";"; :}
+                | NomVariable:nameVar1 IGUAL NomVariable:nameVar2 {: RESULT = nameVar1.toString() + " = " + nameVar2.toString() + ";"; :}
+                | NomVariable:nameVar IGUAL llamada:call {: RESULT = nameVar.toString() + " = " + call.toString(); :}
                 ;
 
     numero ::= NumEntero:numInt {: RESULT = numInt.toString(); :}
@@ -272,6 +296,19 @@ non terminal ArrayList<String> parametros, casos, instruc; //no terminales de ti
                         :}
                 ;
 
+        llamada ::= NomVariable:funcName PAR_A parametros_enviados:sent_params PAR_C {: /*buscarFuncion(funcName.toString())*/; RESULT = funcName.toString() + "(" + recorrerArrParametrosEnviados(sent_params) + ");"; :}
+                        | NomVariable:funcName PAR_A PAR_C PUNTO_COMA {: /*buscarFuncion(funcName.toString())*/; RESULT = funcName.toString() + "();"; :}
+                        ;
+
+        parametros_enviados ::= parametro_enviado:param  {: RESULT = new ArrayList<String>(); RESULT.add(param.toString()); :}
+                        | parametros_enviados:params COMA parametro_enviado:param {: params.add("," + param.toString()); RESULT = params; :}
+                        ;
+
+        parametro_enviado ::= numerocadena:numchain {: RESULT = numchain.toString(); :}
+                        | NumDecimal:flot {: RESULT = flot.toString(); :} 
+                        | NomVariable:paramName {: RESULT = paramName.toString(); :}
+                        ;
+
 
         //No terminal: condiciones
 /*3)*/condicionales ::= si:iff  {: RESULT = iff.toString(); :}
@@ -299,8 +336,8 @@ non terminal ArrayList<String> parametros, casos, instruc; //no terminales de ti
                 | DIF IGUAL {: RESULT = "!="; :}
                 ;
     
-    instruc ::= ejecucion:exec {: RESULT = new ArrayList<String>(); RESULT.add(exec.toString()); :}
-            | instruc:instr ejecucion:exec  {: instr.add(exec.toString()); RESULT = instr; :} //principales:princ PUNTO_COMA {: RESULT = princ.toString(); :}
+    instruc ::= tarea:exec {: RESULT = new ArrayList<String>(); RESULT.add(exec.toString()); :}
+            | instruc:instr tarea:exec  {: instr.add(exec.toString()); RESULT = instr; :} //principales:princ PUNTO_COMA {: RESULT = princ.toString(); :}
             ; //declara,asigna,lee,escribe
 
         //No terminal: else

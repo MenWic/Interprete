@@ -16,4 +16,5 @@ menwic\interprete\analizadores\a_sintactico\Parametro.class
 menwic\interprete\analizadores\a_sintactico\Variable.class
 menwic\interprete\GUI\JFramePrincipal.class
 menwic\interprete\GUI\JFramePrincipal$3.class
+.netbeans_automatic_build
 menwic\interprete\Interprete.class

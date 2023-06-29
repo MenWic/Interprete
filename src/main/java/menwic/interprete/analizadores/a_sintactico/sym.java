@@ -34,8 +34,9 @@ public class sym {
   public static final int MENOS = 4;
   public static final int MENOR = 9;
   public static final int PAR_C = 11;
+  public static final int RETORNA = 36;
   public static final int PAR_A = 10;
-  public static final int ERROR = 36;
+  public static final int ERROR = 37;
   public static final int MAYOR = 8;
   public static final int NumEntero = 20;
   public static final int NomVariable = 22;
@@ -82,6 +83,7 @@ public class sym {
   "MIENTRAS",
   "PROCEDIMIENTO",
   "FUNCION",
+  "RETORNA",
   "ERROR"
   };
 }

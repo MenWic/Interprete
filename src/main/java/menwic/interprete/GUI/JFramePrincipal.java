@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 import menwic.interprete.analizadores.a_lexico.Lexer;
-import menwic.interprete.analizadores.a_sintactico.parser; 
+import menwic.interprete.analizadores.a_sintactico.parser;
 //Aqui el clavo
 
 /**
@@ -222,14 +222,19 @@ public class JFramePrincipal extends javax.swing.JFrame {
             code += "import java.util.ArrayList;\n";
             code += "import javax.swing.JOptionPane;\n\n";
             code += "public class Codigo {\n";
+            //System.out.println(parser.getTxtFunciones());
             code += "\tpublic static void main(String[] args){\n"; //code += "\tpublic static void MainCodigo(javax.swing.JTextArea jTextAreaSalida){\n";
 
             jTextAreaSalida.setText(""); //Limpiamos Area de Salida
 
             /* PRIMERO REALIZAMOS ANALIZIS SINTACTICO */
             parser.parse(); //Si hay errores lexicos, el try muere aqui... y pasa al catch
+
+            code += "//Procediminetos/Funciones creados inicialmente..."+"\n";
             code += parser.getText(); //Insertar texto/body de la clase Codigo.java
-            code += "\t}\n}\n";
+            code += "\t\n}\n";
+            code += parser.getTxtFunciones(); //Metodo que trae las Funciones (si es que vienen) arriba del main
+            code += "}";
             System.out.print(code); //Muestra String de Codigo.java, en Consola
 
             /* SEGUNDO CREA ARCHIVO JAVA */
@@ -356,7 +361,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
             jTextAreaSalida.setText(""); //Limpiar jTextAreaSalida
             //Inicia formalmente proceso de ejecucion de la clase
             Process ejecucion = ejecutarProceso(EXECUTE, NAME_CLASS); //Sin el ".class"
-            
+
             mensaje = "Archivo " + NAME_CLASS + ".class ejecutando exitosamente";
             System.out.println(">status: " + mensaje); //mostramos en consola
             jTextAreaSalida.append(">status: " + mensaje + "\n\n");
