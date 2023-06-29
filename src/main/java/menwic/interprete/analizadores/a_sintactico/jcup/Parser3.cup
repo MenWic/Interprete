@@ -18,7 +18,7 @@ parser code {:
     public parser(Lexer lex, javax.swing.JTextArea text){ //Debo cambiar TextArea por clase Codigo? Yo consideor que no
         super(lex);
         this.arrVariables = new ArrayList<>(); //Arreglo
-        this.arrProcediminetos = new ArrayList<>(); //Arreglo de los nombres de procedimientos
+        this.arrProcedimientos = new ArrayList<>(); //Arreglo de los nombres de procedimientos
         this.arrFunciones = new ArrayList<>(); //Arreglo de los nombres de funciones
     }
      
@@ -103,8 +103,9 @@ parser code {:
 
         /* ************************************************************************************************ */
         //Recorre parametros del arreglo global y elimina "_"
-        public String recorrerParametros(ArrayList<String> parametros){
+        public String recorrerParametros(ArrayList<String> arrParametros){
             String result = "";
+
             for(String p: arrParametros){
                 result += p.replaceAll("_", " "); 
             }
@@ -117,12 +118,14 @@ parser code {:
         }
 
         //Metodo para guardar funciones (nombre, tipo, parametros)
-        public void guardarFuncion(String dataType, String nameFunction, ArrayList<String> parameters){
-                arrFunciones.add(new Variable(dataType, nameFunction, parameters));
+        public void guardarFuncion(String dataType, String nameFunction){ //COMO HAGO POR EL TIPO, CONCATENADOS COMO UN STR???
+                String func = dataType +"_"+ nameFunction;
+                arrFunciones.add(func);
         }
 
         //Metodo para identificar tipo primitivo de la funcion
-        //SIN USAR AUN
+        //SIN USAR AUN, BORRAR
+        /*
         public String obtenerTipoFuncion(String nameFunction) {
                 String resultado = "";
                 Funcion funct = buscarFunction(nameFunction);
@@ -141,6 +144,7 @@ parser code {:
             }
             return resultado;
         }
+        /*
         /* ************************************************************************************************ */
 :}
 
@@ -151,11 +155,12 @@ ENTERO, FLOTANTE, TEXTO, NumEntero, NumDecimal, NomVariable, Cadena,
 ESCRIBIR, LEER, SI, SINO, EN_CASO_DE, CASO, FIN_CASO, DEPLANO, PARA, MIENTRAS, PROCEDIMIENTO, FUNCION, ERROR;
 
 //no terminales de cup
-non terminal inicio, preejecucion, procesos, principales, ejecucion, declaracion, asignacion, numero, operacion, operando, escritura, mensaje, lectura, 
-condicionales, si, condicion, valor, comparador, sino, conmutador, numerocadena, caso, predeterminado, ciclos, mientras, para, 
-param_para, procedimiento, params, param, funcion, tipoDato;
+non terminal inicio, preejecucion, proceso, procedimiento, param, funcion, tipoDato, ejecucion, tarea, principales, declaracion, asignacion, numero, operacion, operando, 
+escritura, mensaje, lectura, condicionales, si, condicion, valor, comparador, sino, conmutador, numerocadena, caso, predeterminado,
+ciclos, mientras, para, param_para;
 
-non terminal ArrayList<String> casos, instruc, parametros;
+non terminal ArrayList<String> parametros, casos, instruc; //no terminales de tipo ArrayList<String> para alamacenar Strings
+
         //Funciones/Procedimientos y Principales (ciclos,condicionales,principales) 
 /*-0-*/inicio ::= preejecucion:preexec ejecucion:exec {: texto += preexec.toString() + exec.toString(); :}
                 | ejecucion:exec {: texto += exec.toString(); :}
@@ -163,14 +168,14 @@ non terminal ArrayList<String> casos, instruc, parametros;
 
 
         //Funciones/Procedimientos recursivamente DUDA: ESTA BIEN ASI LA RECURSIVIDAD? O ES AL REVES?
-/*-1-*/preejecucion ::= procesos:proc preejecucion:preexec {: RESULT = proc.toString() + preexec.toString(); :}
-                    | procesos:proc {: RESULT = proc.toString(); :}
+/*-1-*/preejecucion ::= proceso:proc preejecucion:preexec {: RESULT = proc.toString() + preexec.toString() + "\n"; :}
+                    | proceso:proc {: RESULT = proc.toString() + "\n"; :}
                     ;
 
 
         //No terminal: Procedimiento o Funcion
-/*1)*/procesos :: = procedimiento:proced {: RESULT = proced.toString(); :}
-                | funcion:func {: RESULT = func.toString(); :}
+/*1)*/proceso ::= procedimiento:proced {: texto += proced.toString() + "\n"; :}
+                | funcion:func {: texto += func.toString() + "\n"; :}
                 ;
 
         //DUDA: los parametros:params cuando los guardo?
@@ -178,9 +183,9 @@ non terminal ArrayList<String> casos, instruc, parametros;
                     | PROCEDIMIENTO NomVariable:nameProced PAR_A PAR_C LLAVE_A instruc:instr LLAVE_C {: guardarProcedimiento(nameProced.toString()); RESULT = "public static void " + nameProced.toString() + "(){" + recorrerArrInstrucciones(instr) + "}"; :}
                     ;
 
-        //No terminal: Funcion
-/*2*/funcion ::= FUNCION tipoDato:dataType NomVariable:nameFunc PAR_A parametros:params PAR_C LLAVE_A instruc:instr LLAVE_C {: guardarFuncion(nameFunc.toString()); RESULT = "public static " + dataType.toString() + nameFunc.toString() + "(" + recorrerParametros(params) + "){" + recorrerArrInstrucciones(instr) + "}"; :}
-            | FUNCION tipoDato:dataType NomVariable:nameFunc PAR_A PAR_C LLAVE_A instruc LLAVE_C {: RESULT = guardarFuncion(nameFunc.toString()); RESULT = "public static " + dataType.toString() + nameFunc.toString() + "(){" + recorrerArrInstrucciones(instr) + "}"; :}
+        //No terminal: Funcion con y sin parametros
+/*2*/funcion ::= FUNCION tipoDato:dataType NomVariable:nameFunc PAR_A parametros:params PAR_C LLAVE_A instruc:instr LLAVE_C {: guardarFuncion(dataType.toString(), nameFunc.toString()); RESULT = "public static " + dataType.toString() + " " + nameFunc.toString() + "(" + recorrerParametros(params) + "){" + recorrerArrInstrucciones(instr) + "}"; :}
+            | FUNCION tipoDato:dataType NomVariable:nameFunc PAR_A PAR_C LLAVE_A instruc:instr LLAVE_C {: guardarFuncion(dataType.toString(), nameFunc.toString()); RESULT = "public static " + dataType.toString() + " " + nameFunc.toString() + "(){" + recorrerArrInstrucciones(instr) + "}"; :}
             ;
 
     //DEBEN IR CONCATENADOS EL TIPO Y NOMBRE FUNC PARA GUARDAR EN ARRAYLIST??? 
@@ -191,7 +196,7 @@ non terminal ArrayList<String> casos, instruc, parametros;
 
     //No terminal: ArrayList<params>
     parametros ::= param:par {: RESULT = new ArrayList<>(); RESULT.add(par.toString()); :}
-                | parametros:pars param:par {: pars.add(","+ par.toString()); RESULT = arrParametros; :} 
+                | parametros:pars param:par {: pars.add(","+ par.toString()); RESULT = pars; :} 
                 ;
     //No terminal: param (singular) que se guardara arriba en arrParametros (ArrayList<params>)
     param ::= ENTERO NomVariable:nameProcedure {: RESULT = "int_" + nameProcedure.toString(); :}
@@ -201,9 +206,15 @@ non terminal ArrayList<String> casos, instruc, parametros;
 
 
         //No terminal: principales, condiciones o ciclos
-/*-2-*/ejecucion ::= principales:init PUNTO_COMA {: RESULT = init.toString() + "\n"; :}
-                    | condicionales:cond {: RESULT = cond.toString() + "\n"; :}
-                    | ciclos:cycle {: RESULT = cycle.toString() + "\n"; :}
+/*-2-*/ejecucion ::= tarea:task  {: /*RESULT = task.toString() + exec.toString() + "\n";*/ :} //ejecucion:exec
+                    //| tarea:task {: /*RESULT = task.toString() + "\n";*/ :}
+                    ; /* LE QUITE MULTILNEA PARA AREGLAR ERROR AL COMPILAR CUP, SI LO PONGO, HAY CONFLICTO
+                         ENTRE ejecucion Y LAS PRODUCCIONES DE tarea */
+
+
+/*-2.1-*/tarea ::= principales:princ PUNTO_COMA {: texto += princ.toString() + "\n"; :}
+                    | condicionales:cond {: texto += cond.toString() + "\n"; :}
+                    | ciclos:cycle {: texto += cycle.toString() + "\n"; :}
                     ;
 
         //No terminal: declara, asigna, escribe, lee
@@ -213,7 +224,7 @@ non terminal ArrayList<String> casos, instruc, parametros;
                     | lectura:read {: RESULT = read.toString(); :}
                     ;
 
-        //No terminal: declara
+        //No terminal: declara DUDA: ELIMINO ALIAS DE ENTERO, FLOAT...?
 /*3*/ declaracion ::= ENTERO:entero NomVariable:nameVar {: guardarVariable("int",nameVar.toString()); RESULT = "int " + nameVar.toString() +";"; :}
                     | FLOTANTE:flotante NomVariable:nameVar {: guardarVariable("float",nameVar.toString()); RESULT = "float " + nameVar.toString()+";"; :}
                     | TEXTO:string NomVariable:nameVar {: guardarVariable("String",nameVar.toString()); RESULT = "String " + nameVar.toString()+";"; :}

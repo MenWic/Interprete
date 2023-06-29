@@ -18,7 +18,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 import menwic.interprete.analizadores.a_lexico.Lexer;
-import menwic.interprete.analizadores.a_sintactico.parser;
+import menwic.interprete.analizadores.a_sintactico.parser; 
+//Aqui el clavo
 
 /**
  *
