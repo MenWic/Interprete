@@ -1,66 +1,88 @@
-Procedimiento ciclo (Texto pedro, Texto sistemas) {
-        Escribir("hola");
+Procedimiento saluda (Texto t1, Texto t2) {
+   Escribir("Saludo de Despedida!");
+
+   Para(0,3){
+      Escribir(t1);
+   }
+   Escribir(t2);
+   Escribir("Ing Christian :)");
 }
 
-Funcion Entero pum (){
-   Escribir("desgraciado");
-   Retorna 1;
+Procedimiento cicloEscritura (Texto texto, Entero cant){
+   Entero cont;
+   cont = 0;
+   Escribir("Inicio de ciclo");
+
+   Mientras(cont<cant){
+      Escribir(texto);
+      cont = cont+1;
+   }
+   Escribir("Fin de ciclo");
 }
 
-Funcion Entero jp (Texto a){
-   Escribir("desgraciado");
-   Retorna 2;
+Funcion Flotante diametro (Flotante radio){
+   Flotante diam;
+   diam = 2*radio;
+
+   Si(diam > 0){
+      Si(diam < 100){
+         Escribir("Diametro calculado! Entre 0 y 100");
+      } Sino{
+         Escribir("Diametro calculado! Mayor que 0");
+      }
+   } Sino{
+      Escribir("Diametro no puede ser menor que 0");
+   }
+   Retorna diam;
 }
 
-Escribir("Se crearon metodos xD");
+Funcion Entero suma (Entero num1, Entero num2){
+   Entero resultado;
+   resultado = num1+num2;
 
-
-Entero n;
-n =0;
-Escribir(n);
-
-Texto t;
-t ="hola";
-Escribir(t);
-
-Leer(n);
-Escribir(n);
-
-Leer(t);
-Escribir(t);
-
-Si(n==10){
-   Escribir("n es 10");
-}
-Sino{
-   Escribir("n no es 10");
+   Escribir("Suma realizada!");
+   Retorna resultado;
 }
 
-Para(0,4){
-Escribir("hola");
-}
+Entero x;
+x=suma(4,6);
+Escribir("La suma es:");
+Escribir(x);
 
-n=10;
-Escribir(n);
+Flotante perim;
+perim=diametro(4.6);
+Escribir("El diametro es:");
+Escribir(perim);
 
-EnCasoDe(n){
-   Caso 1:
-     Escribir("Uno");
+Texto txt;
+txt ="vacio";
+Escribir("Instanciamos variable txt");
+Escribir(txt);
+
+Escribir("Valor asignado a txt:");
+Leer(txt);
+Escribir(txt);
+
+Escribir("Inicio de switch:");
+EnCasoDe(txt){
+   Caso "":
+     Escribir("txt esta vacio");
    FinCaso
-   Caso 10:
-     Escribir("Diez");
+   Caso "a":
+     Escribir("txt es a");
    FinCaso
    Deplano:
-     Escribir("Default, deplano va");
+     Escribir("Default, txt tiene un valor no vacio!");
    FinCaso
 }
+Escribir("Fin de switch:");
 
-n=10;
-Escribir(n);
+Texto impr;
+impr="impreso";
+cicloEscritura(impr, 6);
 
-Mientras(n<12){
-   Escribir(n);
-   n = n+1;
-}
-
-Escribir(n);
+Texto a;
+a="Muchas";
+Texto b;
+b="Gracias!";
+saluda(a,b);

@@ -206,19 +206,7 @@ non terminal ArrayList<String> parametros, parametros_enviados, casos, instruc; 
             | FUNCION tipoDato:dataType NomVariable:nameFunc PAR_A PAR_C LLAVE_A instruc:instr retorno:ret PUNTO_COMA LLAVE_C {: guardarFuncion(dataType.toString(), nameFunc.toString()); RESULT = "public static " + dataType.toString() + " " + nameFunc.toString() + "(){" + recorrerArrInstrucciones(instr) + ret.toString() + ";}"; :}
             ;
 
-        retorno ::= RETORNA NomVariable:var {: buscarVariable(var.toString()); RESULT =  "return " + var.toString(); :}
-                | RETORNA numerocadena:numchain {: RESULT = "return " + numchain.toString(); :}
-                | RETORNA NumDecimal:flot {: RESULT = "return " + flot.toString(); :}
-                ;
-
-
-    //DEBEN IR CONCATENADOS EL TIPO Y NOMBRE FUNC PARA GUARDAR EN ARRAYLIST??? 
-    tipoDato ::= ENTERO {: RESULT = "int"; :}
-            | FLOTANTE {: RESULT = "float"; :}
-            | TEXTO {: RESULT = "String"; :}
-            ;
-
-    //No terminal: ArrayList<params>
+        //No terminal: ArrayList<params>
     parametros ::= param:par {: RESULT = new ArrayList<>(); RESULT.add(par.toString()); :}
                 | parametros:pars COMA param:par {: pars.add(","+ par.toString()); RESULT = pars; :} 
                 ;
@@ -226,6 +214,19 @@ non terminal ArrayList<String> parametros, parametros_enviados, casos, instruc; 
     //No terminal: param (singular) que se guardara arriba en arrParametros (ArrayList<params>)
     param ::=  tipoDato:dataType NomVariable:nameProcedure  {: RESULT = dataType.toString() + "_" + nameProcedure.toString(); :}
            ;
+
+    retorno ::= RETORNA NomVariable:var {: buscarVariable(var.toString()); RESULT =  "return " + var.toString(); :}
+                | RETORNA numerocadena:numchain {: RESULT = "return " + numchain.toString(); :}
+                | RETORNA NumDecimal:flot {: RESULT = "return " + flot.toString(); :}
+                ;
+
+
+    //DEBEN IR CONCATENADOS EL TIPO Y NOMBRE FUNC PARA GUARDAR EN ARRAYLIST??? 
+    tipoDato ::= ENTERO {: RESULT = "int"; :}
+            | FLOTANTE {: RESULT = "double"; :}
+            | TEXTO {: RESULT = "String"; :}
+            ;
+
 
         //No terminal: principales, condiciones o ciclos
 /*-2-*/ejecucion ::= ejecucion tarea:task {: texto += task.toString(); :} //No mover recursividad xD
@@ -248,7 +249,7 @@ non terminal ArrayList<String> parametros, parametros_enviados, casos, instruc; 
 
         //No terminal: declara DUDA: ELIMINO ALIAS DE ENTERO, FLOAT...?
 /*3*/ declaracion ::= ENTERO:entero NomVariable:nameVar {: guardarVariable("int",nameVar.toString()); RESULT = "int " + nameVar.toString() +";"; :}
-                    | FLOTANTE:flotante NomVariable:nameVar {: guardarVariable("float",nameVar.toString()); RESULT = "float " + nameVar.toString()+";"; :}
+                    | FLOTANTE:flotante NomVariable:nameVar {: guardarVariable("double",nameVar.toString()); RESULT = "double " + nameVar.toString()+";"; :}
                     | TEXTO:string NomVariable:nameVar {: guardarVariable("String",nameVar.toString()); RESULT = "String " + nameVar.toString()+";"; :}
                     ;
       
@@ -280,24 +281,25 @@ non terminal ArrayList<String> parametros, parametros_enviados, casos, instruc; 
 /*5*/escritura ::= ESCRIBIR PAR_A mensaje:message PAR_C {: RESULT = "System.out.println(String.valueOf("+ message.toString() +"));"; :}
                 ;
 
-        mensaje ::= NomVariable:nameVar {: RESULT = nameVar; :}
-                | Cadena:text {: RESULT = text; :}
+        mensaje ::= NomVariable:nameVar {: RESULT = nameVar.toString(); :}
+                | Cadena:text {: RESULT = text.toString(); :}
+                | llamada:call {: RESULT = call.toString(); :} //EXTRAAA
                 ;
 
         //No terminal: lee
 /*6*/lectura ::= LEER PAR_A NomVariable:nameVar  PAR_C {: String result = obtenerTipoVariable(nameVar.toString());
                         if(result.equals("int")){
                                 RESULT = nameVar.toString() + " = " + "Integer.parseInt(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
-                        } else if(result.equals("float")){
-                                RESULT = nameVar.toString() + " = " + "Float.parseFloat(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
+                        } else if(result.equals("double")){
+                                RESULT = nameVar.toString() + " = " + "Double.parseDouble(JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\"));";
                         } else if(result.equals("String")){
                                 RESULT = nameVar.toString() + " = " + "JOptionPane.showInputDialog(null, \"Ingrese el nuevo valor para " + nameVar.toString() + ":\");";
                         }
                         :}
                 ;
 
-        llamada ::= NomVariable:funcName PAR_A parametros_enviados:sent_params PAR_C {: /*buscarFuncion(funcName.toString())*/; RESULT = funcName.toString() + "(" + recorrerArrParametrosEnviados(sent_params) + ");"; :}
-                        | NomVariable:funcName PAR_A PAR_C PUNTO_COMA {: /*buscarFuncion(funcName.toString())*/; RESULT = funcName.toString() + "();"; :}
+        llamada ::= NomVariable:nameProcess PAR_A parametros_enviados:sent_params PAR_C {:  RESULT = nameProcess.toString() + "(" + recorrerArrParametrosEnviados(sent_params) + ");"; :}
+                        | NomVariable:nameProcess PAR_A PAR_C PUNTO_COMA {: /*buscarFuncion(funcName.toString())*/; RESULT = nameProcess.toString() + "();"; :}
                         ;
 
         parametros_enviados ::= parametro_enviado:param  {: RESULT = new ArrayList<String>(); RESULT.add(param.toString()); :}

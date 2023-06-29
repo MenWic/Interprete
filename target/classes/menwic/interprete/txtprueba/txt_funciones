@@ -1,24 +1,49 @@
-Procedimiento saluda (Texto pedro, Texto sistemas) {
-        Escribir("hola");
+Procedimiento saluda (Texto nombre) {
+   Escribir("Saludos");
+   Escribir(nombre);
 }
 
-Funcion Entero pum (){
-   Escribir("desgraciado");
-   Retorna 1;
+Funcion Flotante diametro (Flotante radio){
+   Flotante diam;
+   diam = 2*radio;
+
+   Si(diam > 0){
+      Si(diam < 100){
+         Escribir("Diametro calculado! Entre 0 y 100");
+      } Sino{
+         Escribir("Diametro calculado! Mayor que 0");
+      }
+   } Sino{
+      Escribir("Diametro no puede ser menor que 0");
+   }
+   Retorna diam;
 }
 
-Funcion Entero suma (Entero numerito){
+Funcion Entero suma (Entero num1, Entero num2){
    Entero resultado;
-   resultado = 1+numerito;
+   resultado = num1+num2;
+
+   Escribir("Suma realizada!");
    Retorna resultado;
 }
 
 Entero x;
-x=suma(7);
+x=suma(4,6);
+Escribir("La suma es:");
 Escribir(x);
 
-Texto a;
-a="aloo";
-saluda(a,"algooo");
+Flotante perim;
+perim=diametro(4.6);
+Escribir("El diametro es:");
+Escribir(perim);
 
-saluda("alv","funciona");
+Texto txt;
+txt ="vacio";
+Escribir(txt);
+
+Leer(txt);
+Escribir(txt);
+
+Texto a;
+a="Christian";
+saluda(a);
