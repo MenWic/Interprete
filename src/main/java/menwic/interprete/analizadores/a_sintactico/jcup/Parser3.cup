@@ -24,7 +24,6 @@ parser code {:
         //this.txtFunciones = "";
     }
      
-     /*  */
         String texto = ""; //Texto que iremos acumulando para pasar a Java
 
         //Getter de txt
@@ -36,24 +35,19 @@ parser code {:
         public String getTxtFunciones() {
                 return txtFunciones;
         }
-
-        /* *************************************************************** 
         
-        public void report_fatal_error(String message, Object info){
-            System.out.println("Public void report_fatal_error");
-        }
-
         public void syntax_error(Symbol cur_token){
-            System.out.println("Error: "+ cur_token.left + "," + cur_token.right);
+            JOptionPane.showMessageDialog(null, "Error, Fila: "+ cur_token.left + ", Columna: " + cur_token.right + ", Lexema: " + cur_token.value.toString());
+            //System.out.println("Error: "+ cur_token.left + "," + cur_token.right);
         }
+        
 
         public void unrecoveres_syntax_error(Symbol cur_token){
             if(cur_token.sym==sym.EOF){
                 System.out.println("Public void unrecoveredsyntax_Error");
             }
         }
-
-         ***************************************************************** */
+        
 
         //Metodo que recorre el arreglo de casos de un Switch
         public String recorrerArrCasos(ArrayList<String> casos){
